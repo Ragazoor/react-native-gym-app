@@ -1,52 +1,55 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { MuscleEmoji } from '@/components/MuscleEmoji';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useEffect, useState } from 'react';
+import { fetchWorkouts } from '@/clients/fysikenClientStub';
+import { Workout } from '@/models/workout';
+import { useQuery } from 'react-query';
+
+function getInitStartDate(): Date {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date
+}
+
+function getInitEndDate(): Date {
+  const date = new Date();
+  date.setDate(date.getDate() + 8);
+  return date
+}
 
 export default function HomeScreen() {
+  const [startDate, setStartDate] = useState(getInitStartDate());
+  const [endDate, setEndDate] = useState(getInitEndDate());
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  console.log(workouts)
+
+  useEffect(() => {
+    const { data: workouts, isLoading, error } = useQuery('workouts', () => fetchWorkouts(startDate, endDate));
+    if (!workouts || isLoading) {
+      return;
+    }
+    setWorkouts(workouts);
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
+    <>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title"> </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Fysiken Pass</ThemedText>
+        <MuscleEmoji />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
+        <FlatList
+          data={workouts.map((workout) => ({ key: workout.id, ...workout }))}
+          renderItem={({ item }) => <ThemedText style={styles.item}>{item.extraTitle}</ThemedText>}
+        />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    </ >
   );
 }
 
@@ -66,5 +69,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
 });

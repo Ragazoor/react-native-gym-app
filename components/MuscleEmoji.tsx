@@ -9,7 +9,7 @@ import Animated, {
 
 import { ThemedText } from '@/components/ThemedText';
 
-export function HelloWave() {
+export function MuscleEmoji() {
   const rotationAnimation = useSharedValue(0);
 
   rotationAnimation.value = withRepeat(
@@ -23,7 +23,7 @@ export function HelloWave() {
 
   return (
     <Animated.View style={animatedStyle}>
-      <ThemedText style={styles.text}>👋</ThemedText>
+      <ThemedText style={styles.text}>💪</ThemedText>
     </Animated.View>
   );
 }
