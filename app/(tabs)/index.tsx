@@ -26,13 +26,13 @@ export default function HomeScreen() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   console.log(workouts)
 
+  const { data: fetchedWorkouts, isLoading, error } = useQuery('workouts', () => fetchWorkouts(startDate, endDate));
+
   useEffect(() => {
-    const { data: workouts, isLoading, error } = useQuery('workouts', () => fetchWorkouts(startDate, endDate));
-    if (!workouts || isLoading) {
-      return;
+    if (fetchedWorkouts) {
+      setWorkouts(fetchedWorkouts);
     }
-    setWorkouts(workouts);
-  }, []);
+  }, [fetchedWorkouts]);
 
   return (
     <>
