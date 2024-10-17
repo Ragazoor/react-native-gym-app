@@ -1,13 +1,15 @@
 import { parseStaff, Staff } from "./user";
+import { WorkoutType } from "./workout";
 
-export interface Workout {
+export interface MyWorkout {
   id: number;
   extraTitle: string;
   startTime: string;
   endTime: string;
+  isBooked: boolean;
   numBooked: number;
   numSpace: number;
-  numQueued: number;
+  isQueued: boolean;
   workoutType: WorkoutType;
   staffs: Staff[];
 }
@@ -17,7 +19,15 @@ export interface WorkoutType {
   name: string;
 }
 
-export function parseWorkout(data: any): Workout {
+type BaseUser = {
+  id: number;
+  firstName: string;
+  lastName: String;
+};
+
+export type Staff = BaseUser;
+
+export function parseMyWorkout(data: any): MyWorkout {
   try {
     return {
       id: data.id,
@@ -26,8 +36,9 @@ export function parseWorkout(data: any): Workout {
       endTime: data.endTime,
       numBooked: data.numBooked,
       numSpace: data.space,
-      numQueued: data.numQueue,
+      isQueued: data.inQueue,
       workoutType: data.workoutType,
+      isBooked: data.booked,
       staffs: data.staffs.map(parseStaff),
     };
   } catch (error) {

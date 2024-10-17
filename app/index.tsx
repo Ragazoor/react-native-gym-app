@@ -1,49 +1,64 @@
-import { StyleSheet, Button } from 'react-native';
+import { StyleSheet, Text, Button, TouchableOpacity, TextInput, Alert } from 'react-native';
 
 import { useCallback, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { User } from '@/models/user';
 import { useMutation } from 'react-query';
 import { router } from 'expo-router';
-import { login } from '@/clients/fysikenClientStub';
+import { login } from '@/clients/fysikenClient';
+import { useSetAtom } from 'jotai';
+import { userAtom } from '@/atoms/userAtom';
+import { User } from '@/models/user';
 
 export default function LoginScreen() {
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [password, setPassword] = useState("")
   const [username, setUsername] = useState("")
 
-  const [user, setUser] = useState<User | undefined>(undefined)
-  console.log(user)
+  const setUser = useSetAtom(userAtom)
 
-
-  const doLogin = useMutation("login", () => login("Ragz", "hoye"), {
-    onMutate: () => {
-      setIsLoggingIn(true);
-    },
+  const { isLoading, mutate: doLogin } = useMutation<User, Error, void, unknown>("login",
+    () => login(username, password), {
     onSuccess: (data) => {
       setUser(data)
-      router.push("/(tabs)")
+      router.replace("/(tabs)")
     },
     onError: (error) => {
-      console.error(error)
+      Alert.alert("Login Misslyckades", error.message)
     },
     onSettled: () => {
-      setIsLoggingIn(false)
+      setPassword("")
     }
   })
-  const onPress = useCallback(() => {
-    doLogin.mutate()
-  }, [doLogin]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button
-        onPress={onPress}
-        title="Login"
-        color="#848484"
-        accessibilityLabel="Learn more about this purple button"
-        disabled={isLoggingIn}
+      <Text style={styles.title}>Login</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Användarnamn"
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Lösenord"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+
+      <TouchableOpacity
+        style={[styles.button, isLoading && styles.buttonDisabled]}
+        onPress={() => doLogin()}
+        disabled={isLoading}
+      >
+        <Text style={styles.buttonText}>{isLoading ? 'Loggar in...' : 'Login'}</Text>
+      </TouchableOpacity>
     </SafeAreaView >
   );
 }
@@ -52,6 +67,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    marginHorizontal: 16,
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#333',
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#aaa',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+

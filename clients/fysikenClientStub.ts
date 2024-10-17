@@ -27,18 +27,18 @@ export const fetchWorkouts = (
       numSpace: 20,
       numQueued: 0,
       workoutType: { id: 1, name: "Yoga" },
-      staffs: [],
+      staffs: [{ id: 1, firstName: "John", lastName: "Doe" }],
     },
     {
       id: 2,
       extraTitle: "Crossfit",
       startTime: "2022-01-01T10:00:00",
       endTime: "2022-01-01T11:00:00",
-      numBooked: 10,
+      numBooked: 20,
       numSpace: 20,
-      numQueued: 0,
+      numQueued: 1,
       workoutType: { id: 2, name: "Crossfit" },
-      staffs: [],
+      staffs: [{ id: 2, firstName: "Jane", lastName: "Smith" }],
     },
   ];
   return Promise.resolve(workouts);

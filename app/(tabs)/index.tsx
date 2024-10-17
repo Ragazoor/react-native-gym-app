@@ -4,9 +4,10 @@ import { MuscleEmoji } from '@/components/MuscleEmoji';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useEffect, useState } from 'react';
-import { fetchWorkouts } from '@/clients/fysikenClientStub';
+import { fetchWorkouts } from '@/clients/fysikenClient';
 import { Workout } from '@/models/workout';
 import { useQuery } from 'react-query';
+import WorkoutCard from '@/components/WorkoutCard';
 
 function getInitStartDate(): Date {
   const date = new Date();
@@ -16,15 +17,14 @@ function getInitStartDate(): Date {
 
 function getInitEndDate(): Date {
   const date = new Date();
-  date.setDate(date.getDate() + 8);
+  date.setDate(date.getDate() + 1);
   return date
 }
 
-export default function HomeScreen() {
+export default function WorkoutsScreen() {
   const [startDate, setStartDate] = useState(getInitStartDate());
   const [endDate, setEndDate] = useState(getInitEndDate());
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-  console.log(workouts)
 
   const { data: fetchedWorkouts, isLoading, error } = useQuery('workouts', () => fetchWorkouts(startDate, endDate));
 
@@ -46,7 +46,9 @@ export default function HomeScreen() {
       <ThemedView style={styles.stepContainer}>
         <FlatList
           data={workouts.map((workout) => ({ key: workout.id, ...workout }))}
-          renderItem={({ item }) => <ThemedText style={styles.item}>{item.extraTitle}</ThemedText>}
+          renderItem={({ item }) =>
+            <WorkoutCard workout={item} />
+          }
         />
       </ThemedView>
     </ >
