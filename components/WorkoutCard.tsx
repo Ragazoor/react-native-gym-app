@@ -19,8 +19,8 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   } = workout;
 
   // Format time (you can customize based on your requirement)
-  const formattedStartTime = new Date(startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  const formattedEndTime = new Date(endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const formattedStartTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const formattedEndTime = endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
   // Booking status calculation
   const bookingStatus = `${numBooked} / ${numSpace}`;
@@ -35,7 +35,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
 
       <View style={styles.details}>
         <Text style={styles.time}>
-          {formattedStartTime} - {formattedEndTime}
+          {workout.weekDay} {formattedStartTime} - {formattedEndTime}
         </Text>
         <Text style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}>
           {isFullyBooked ? 'Fully Booked' : `Booked: ${bookingStatus}`}

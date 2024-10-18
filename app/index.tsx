@@ -1,10 +1,10 @@
 import { StyleSheet, Text, Button, TouchableOpacity, TextInput, Alert } from 'react-native';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMutation } from 'react-query';
 import { router } from 'expo-router';
-import { login } from '@/clients/fysikenClient';
+import { login } from '@/clients/fysikenClientStub';
 import { useSetAtom } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { User } from '@/models/user';

@@ -86,3 +86,30 @@ export const fetchMyWorkouts = (): Promise<MyWorkout[]> => {
 
   return fetchMyWorkoutQuery;
 };
+
+export const bookWorkout = (
+  workoutId: number,
+  userId: number
+): Promise<void> => {
+  const url = `${BASE_URL}/memberapi/workoutBooking/add?workout=${workoutId}&method=trainingcard&user_id=${userId}`;
+
+  const fetchMyWorkoutQuery = fetch(encodeURI(url), {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    const status = await response.status;
+    if (status === 200) {
+      return;
+    } else {
+      const jsonResp = await response.json();
+      throw new Error(
+        `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
+      );
+    }
+  });
+
+  return fetchMyWorkoutQuery;
+};
