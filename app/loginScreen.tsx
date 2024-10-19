@@ -2,32 +2,63 @@ import { StyleSheet, Text, Button, TouchableOpacity, TextInput, Alert } from 're
 
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { router } from 'expo-router';
 import { login } from '@/clients/fysikenClientStub';
 import { useSetAtom } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { User } from '@/models/user';
-import { getCurrentUser } from '@/clients/fysikenClient';
 
-export default function SplashScreen() {
+export default function LoginScreen() {
+  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
 
   const setUser = useSetAtom(userAtom)
 
-  const { isLoading, error } = useQuery<User, Error, User>("getCurrentUser",
-    () => getCurrentUser(), {
+  const { isLoading, mutate: doLogin } = useMutation<User, Error, void, unknown>("login",
+    () => login(username, password), {
     onSuccess: (data) => {
-      setUser(data);
-      router.replace("/(tabs)");
+      setUser(data)
+      router.replace("/(tabs)")
     },
-    onError: () => {
-      router.replace("/login");
+    onError: (error) => {
+      Alert.alert("Login Misslyckades", error.message)
     },
+    onSettled: () => {
+      setPassword("")
+    }
   })
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Fysiken 2.0</Text>
+      <Text style={styles.title}>Login</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Användarnamn"
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Lösenord"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+
+      <TouchableOpacity
+        style={[styles.button, isLoading && styles.buttonDisabled]}
+        onPress={() => doLogin()}
+        disabled={isLoading}
+      >
+        <Text style={styles.buttonText}>{isLoading ? 'Loggar in...' : 'Login'}</Text>
+      </TouchableOpacity>
     </SafeAreaView >
   );
 }
@@ -43,7 +74,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    alignContent: 'center',
     marginBottom: 30,
     color: '#333',
   },

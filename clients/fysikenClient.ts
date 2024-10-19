@@ -140,3 +140,28 @@ export const removeWorkout = (
 
   return removeWorkoutQuery;
 };
+
+export const getCurrentUser = (): Promise<User> => {
+  const url = `${BASE_URL}/memberapi/get/current`;
+
+  const getUserQuery = fetch(encodeURI(url), {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    const status = await response.status;
+    if (status === 200) {
+      const jsonResp = await response.json();
+      return parseUser(jsonResp);
+    } else {
+      const jsonResp = await response.json();
+      throw new Error(
+        `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
+      );
+    }
+  });
+
+  return getUserQuery;
+};
