@@ -2,7 +2,7 @@ import { parseStaff, Staff } from "./user";
 
 export interface Workout {
   id: number;
-  extraTitle: string;
+  duration: string;
   startTime: Date;
   endTime: Date;
   numBooked: number;
@@ -11,6 +11,7 @@ export interface Workout {
   workoutType: WorkoutType;
   staffs: Staff[];
   weekDay: string;
+  venue?: Venue;
 }
 
 export interface WorkoutType {
@@ -18,11 +19,17 @@ export interface WorkoutType {
   name: string;
 }
 
+export interface Venue {
+  id: number;
+  name: string;
+  room: string;
+}
+
 export function parseWorkout(data: any): Workout {
   try {
     return {
       id: data.id,
-      extraTitle: data.extra_title,
+      duration: data.extra_title,
       startTime: new Date(data.startTime),
       endTime: new Date(data.endTime),
       numBooked: data.numBooked,
@@ -31,10 +38,22 @@ export function parseWorkout(data: any): Workout {
       workoutType: data.workoutType,
       staffs: data.staffs.map(parseStaff),
       weekDay: dateToWeekDay(new Date(data.startTime)),
+      venue: parseVenue(data),
     };
   } catch (error) {
     console.error("Error:", error);
+    console.log("Error parsing workout", data.resources);
+    console.log(data.workoutType);
     throw new ReferenceError("Error parsing workout");
+  }
+}
+
+function parseVenue(data: any): Venue | undefined {
+  if (data.resources.length === 0) {
+    return undefined;
+  } else {
+    const [room, name] = data.resources[0].lastname.split(" ");
+    return { id: data.resources[0].id, name: name, room: room };
   }
 }
 

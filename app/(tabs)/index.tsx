@@ -29,6 +29,7 @@ export default function WorkoutsScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDate] = useState(new Date());
   const [filteredWorkouts, setFilteredWorkouts] = useState(allWorkouts);
+  const [selectedVenues, setSelectedVenues] = useState<string[]>([]);
 
   const { data: fetchedWorkouts, isLoading, error } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
 

@@ -8,7 +8,7 @@ interface WorkoutCardProps {
 
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   const {
-    extraTitle,
+    duration,
     startTime,
     endTime,
     numBooked,
@@ -16,6 +16,8 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
     numQueued,
     workoutType,
     staffs,
+    venue,
+    weekDay
   } = workout;
 
   // Format time (you can customize based on your requirement)
@@ -26,16 +28,18 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   const bookingStatus = `${numBooked} / ${numSpace}`;
   const isFullyBooked = numBooked >= numSpace;
 
+  const extraTitle = `${duration ? duration : ""}${venue ? "  " + venue.name : ""}`
+
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8}>
       <View style={styles.header}>
         <Text style={styles.workoutType}>{workoutType.name}</Text>
-        {extraTitle ? <Text style={styles.extraTitle}>{extraTitle}</Text> : null}
+        <Text style={styles.extraTitle}>{extraTitle}</Text>
       </View>
 
       <View style={styles.details}>
         <Text style={styles.time}>
-          {workout.weekDay} {formattedStartTime} - {formattedEndTime}
+          {weekDay} {formattedStartTime} - {formattedEndTime}
         </Text>
         <Text style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}>
           {isFullyBooked ? 'Fully Booked' : `Booked: ${bookingStatus}`}
