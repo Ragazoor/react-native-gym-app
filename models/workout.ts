@@ -21,8 +21,13 @@ export interface WorkoutType {
 
 export interface Venue {
   id: number;
-  name: string;
+  name: VenueName;
   room: string;
+}
+
+export enum VenueName {
+  GIBRALTARGATAN = "Gibraltargatan",
+  KASTERNTORGET = "Kaserntorget",
 }
 
 export function parseWorkout(data: any): Workout {
