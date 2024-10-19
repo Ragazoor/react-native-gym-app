@@ -1,4 +1,4 @@
-import { MyWorkout, parseMyWorkout } from "@/models/myWorkout";
+import { MyWorkout, parseMyWorkout } from "@/models/bookedWorkout";
 import { parseUser, User } from "@/models/user";
 import { parseWorkout, Workout } from "@/models/workout";
 
@@ -92,9 +92,8 @@ export const bookWorkout = (
   workoutId: number
 ): Promise<void> => {
   const url = `${BASE_URL}/memberapi/workoutBooking/add?workout=${workoutId}&method=trainingcard&user_id=${userId}`;
-  console.log(userId, workoutId);
 
-  const fetchMyWorkoutQuery = fetch(encodeURI(url), {
+  const bookWorkoutQuery = fetch(encodeURI(url), {
     method: "POST",
     credentials: "include",
     headers: {
@@ -112,5 +111,32 @@ export const bookWorkout = (
     }
   });
 
-  return fetchMyWorkoutQuery;
+  return bookWorkoutQuery;
+};
+
+export const removeWorkout = (
+  userId: number,
+  workoutId: number
+): Promise<void> => {
+  const url = `${BASE_URL}/memberapi/workoutBooking/remove?workout=${workoutId}&booked_user=${userId}`;
+
+  const removeWorkoutQuery = fetch(encodeURI(url), {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    const status = await response.status;
+    if (status === 200) {
+      return;
+    } else {
+      const jsonResp = await response.json();
+      throw new Error(
+        `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
+      );
+    }
+  });
+
+  return removeWorkoutQuery;
 };

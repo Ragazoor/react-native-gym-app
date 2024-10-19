@@ -1,5 +1,5 @@
 import { parseStaff, Staff } from "./user";
-import { WorkoutType } from "./workout";
+import { dateToWeekDay, WorkoutType } from "./workout";
 
 export interface BookedWorkout {
   id: number;
@@ -9,9 +9,11 @@ export interface BookedWorkout {
   isBooked: boolean;
   numBooked: number;
   numSpace: number;
+  numQueued: number;
   inQueue: boolean;
   workoutType: WorkoutType;
   staffs: Staff[];
+  weekDay: string;
 }
 
 export function parseMyWorkout(data: any): BookedWorkout {
@@ -23,10 +25,12 @@ export function parseMyWorkout(data: any): BookedWorkout {
       endTime: data.endTime,
       numBooked: data.numBooked,
       numSpace: data.space,
+      numQueued: data.numQueue,
       inQueue: data.inQueue,
       workoutType: data.workoutType,
       isBooked: data.booked,
       staffs: data.staffs.map(parseStaff),
+      weekDay: dateToWeekDay(new Date(data.startTime)),
     };
   } catch (error) {
     console.error("Error:", error);

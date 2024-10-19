@@ -1,20 +1,30 @@
-import { BookedWorkout } from '@/models/myWorkout';
+import { userAtom } from '@/atoms/userAtom';
+import { useRemoveBooking } from '@/hooks/useRemoveBooking';
+import { BookedWorkout } from '@/models/bookedWorkout';
+import { useAtomValue } from 'jotai';
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 
+interface BookedWorkoutCardProps {
+  workout: BookedWorkout;
+}
 
-export const BookedWorkoutCard = ({ item }: { item: BookedWorkout }) => {
+const BookedWorkoutCard: React.FC<BookedWorkoutCardProps> = ({ workout }) => {
   const {
+    id: workoutId,
     extraTitle,
     startTime,
     endTime,
-    isBooked,
     numBooked,
     numSpace,
-    inQueue: isQueued,
+    numQueued,
     workoutType,
     staffs,
-  } = item;
+    weekDay
+  } = workout;
+
+  const user = useAtomValue(userAtom);
+  const { isRemovingBooking, removeBooking } = useRemoveBooking(user!.id, workoutId);
 
   const formattedStartTime = new Date(startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const formattedEndTime = new Date(endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -26,17 +36,19 @@ export const BookedWorkoutCard = ({ item }: { item: BookedWorkout }) => {
     <TouchableOpacity style={styles.card} activeOpacity={0.8}>
       <View style={styles.header}>
         <Text style={styles.workoutType}>{workoutType.name}</Text>
-        {extraTitle ? <Text style={styles.extraTitle}>{extraTitle}</Text> : null}
+        <Text style={styles.extraTitle}>{extraTitle}</Text>
       </View>
 
       <View style={styles.details}>
         <Text style={styles.time}>
-          {formattedStartTime} - {formattedEndTime}
+          {weekDay} {formattedStartTime} - {formattedEndTime}
         </Text>
         <Text style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}>
           {isFullyBooked ? 'Fully Booked' : `Booked: ${bookingStatus}`}
         </Text>
-        {isQueued && <Text style={styles.queue}>You are in the queue</Text>}
+        {numQueued > 0 && (
+          <Text style={styles.queue}>Queue: {numQueued}</Text>
+        )}
       </View>
 
       <View style={styles.staffSection}>
@@ -47,6 +59,8 @@ export const BookedWorkoutCard = ({ item }: { item: BookedWorkout }) => {
           </Text>
         ))}
       </View>
+      <Button title="Avboka" color={"red"} disabled={isRemovingBooking} onPress={() => removeBooking()} />
+
     </TouchableOpacity>
   );
 };

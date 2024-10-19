@@ -1,12 +1,10 @@
-import { fetchMyWorkouts } from '@/clients/fysikenClient';
-import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { useQuery } from 'react-query';
+import React from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import BookedWorkoutCard from './BookedWorkoutCard';
 import { useAtom } from 'jotai';
 import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
 
-const UpcomingWorkouts: React.FC = () => {
+const BookedWorkouts: React.FC = () => {
   const [{ data: workouts, isLoading, error, refetch }] = useAtom(bookedWorkoutsAtom);
 
   return (
@@ -15,11 +13,11 @@ const UpcomingWorkouts: React.FC = () => {
       {workouts && workouts.length > 0 ? (
         <FlatList
           data={workouts}
-          renderItem={BookedWorkoutCard}
+          renderItem={({ item: workout }) => <BookedWorkoutCard workout={workout} />}
           keyExtractor={(item) => item.id.toString()}
         />
       ) : (
-        <Text style={styles.noWorkoutsText}>No upcoming workouts</Text>
+        <Text style={styles.noWorkoutsText}>No booked workouts</Text>
       )}
     </View>
   );
@@ -102,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UpcomingWorkouts;
+export default BookedWorkouts;

@@ -1,6 +1,6 @@
 import { userAtom } from '@/atoms/userAtom';
 import ProfilePage from '@/components/ProfilePage';
-import UpcomingWorkouts from '@/components/UpcomingWorkouts';
+import BookedWorkouts from '@/components/BookedWorkouts';
 import { useAtomValue } from 'jotai';
 import { ScrollView } from 'react-native';
 
@@ -12,7 +12,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView>
       {user && <ProfilePage user={user} />}
-      <UpcomingWorkouts />
+      <BookedWorkouts />
     </SafeAreaView>
   );
 }

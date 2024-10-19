@@ -1,12 +1,13 @@
 import { Workout } from '@/models/workout';
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { useMutation } from 'react-query';
 import { bookWorkout } from '@/clients/fysikenClient';
 import { useAtom, useAtomValue } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
+import { useRemoveBooking } from '@/hooks/useRemoveBooking';
+import { useMakeBooking } from '@/hooks/useMakeBooking';
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -30,15 +31,9 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   const user = useAtomValue(userAtom)
   const [{ data: bookedWorkouts, refetch: refetchMyWorkouts }] = useAtom(bookedWorkoutsAtom);
 
-  const { isLoading, mutate: doBooking } = useMutation<void, Error, void, unknown>("bookWorkout",
-    () => bookWorkout(user!.id, workoutId), {
-    onSuccess: () => {
-      refetchMyWorkouts()
-    },
-    onError: (error) => {
-      Alert.alert("Bokning Misslyckades", error.message)
-    }
-  })
+  const { isBooking, makeBooking } = useMakeBooking(user!.id, workoutId);
+
+  const { isRemovingBooking, removeBooking } = useRemoveBooking(user!.id, workoutId);
 
   // Format time (you can customize based on your requirement)
   const formattedStartTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -82,7 +77,8 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
             </Text>
           ))}
         </View>
-        <Button title="Boka" disabled={isLoading || isBooked} onPress={() => doBooking()} />
+        {!isBooked && <Button title="Boka" disabled={isBooking} onPress={() => makeBooking()} />}
+        {isBooked && <Button title="Avboka" color={"red"} disabled={isRemovingBooking} onPress={() => removeBooking()} />}
       </View>
     </TouchableOpacity>
   );

@@ -21,7 +21,7 @@ function getInitStartDate(): Date {
 
 function getInitEndDate(): Date {
   const date = new Date();
-  date.setDate(date.getDate() + 1);
+  date.setDate(date.getDate() + 8);
   return date
 }
 
@@ -35,6 +35,8 @@ export default function WorkoutsScreen() {
   const selectedVenues = useAtomValue(selectedVenuesAtom);
 
   const { data: fetchedWorkouts, isLoading, error, refetch } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
+
+  const nowDateTime = new Date();
 
   const selectedWeekDay = useMemo(() => {
     return dateTimeToWeekDay(selectedDateTime)
@@ -58,7 +60,7 @@ export default function WorkoutsScreen() {
           .map(({ name }) => name)
           .includes(workout.venue.name) : true
 
-      return (workoutDate === selectedDate) && isOkVenue;
+      return (workoutDate === selectedDate) && workout.endTime > nowDateTime && isOkVenue;
     }));
   }, [selectedDateTime, allWorkouts, selectedVenues]);
 
