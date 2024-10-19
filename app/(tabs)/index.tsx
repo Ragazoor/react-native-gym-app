@@ -62,7 +62,7 @@ export default function WorkoutsScreen() {
     }));
   }, [selectedDateTime, allWorkouts, selectedVenues]);
 
-  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  const onSelectDateTime = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate;
     setShowDatePicker(false);
     setSelectedDate(currentDate);
@@ -82,7 +82,7 @@ export default function WorkoutsScreen() {
             value={selectedDateTime}
             mode="date"
             display="default"
-            onChange={onChange}
+            onChange={onSelectDateTime}
           />
         )}
       </ThemedView >
