@@ -34,7 +34,7 @@ export default function WorkoutsScreen() {
   const [filteredWorkouts, setFilteredWorkouts] = useState(allWorkouts);
   const selectedVenues = useAtomValue(selectedVenuesAtom);
 
-  const { data: fetchedWorkouts, isLoading, error } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
+  const { data: fetchedWorkouts, isLoading, error, refetch } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
 
   const selectedWeekDay = useMemo(() => {
     return dateTimeToWeekDay(selectedDateTime)

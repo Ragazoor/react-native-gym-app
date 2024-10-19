@@ -1,68 +1,21 @@
 import { fetchMyWorkouts } from '@/clients/fysikenClient';
-import { MyWorkout } from '@/models/myWorkout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-query';
+import BookedWorkoutCard from './BookedWorkoutCard';
+import { useAtom } from 'jotai';
+import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
 
 const UpcomingWorkouts: React.FC = () => {
-  const { data: workouts, isLoading, error } = useQuery('upcomingWorkouts', () => fetchMyWorkouts());
-
-  const renderWorkoutCard = ({ item }: { item: MyWorkout }) => {
-    const {
-      extraTitle,
-      startTime,
-      endTime,
-      isBooked,
-      numBooked,
-      numSpace,
-      isQueued,
-      workoutType,
-      staffs,
-    } = item;
-
-    const formattedStartTime = new Date(startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    const formattedEndTime = new Date(endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-    const bookingStatus = `${numBooked} / ${numSpace}`;
-    const isFullyBooked = numBooked >= numSpace;
-
-    return (
-      <TouchableOpacity style={styles.card} activeOpacity={0.8}>
-        <View style={styles.header}>
-          <Text style={styles.workoutType}>{workoutType.name}</Text>
-          {extraTitle ? <Text style={styles.extraTitle}>{extraTitle}</Text> : null}
-        </View>
-
-        <View style={styles.details}>
-          <Text style={styles.time}>
-            {formattedStartTime} - {formattedEndTime}
-          </Text>
-          <Text style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}>
-            {isFullyBooked ? 'Fully Booked' : `Booked: ${bookingStatus}`}
-          </Text>
-          {isQueued && <Text style={styles.queue}>You are in the queue</Text>}
-        </View>
-
-        <View style={styles.staffSection}>
-          <Text style={styles.staffTitle}>Staff:</Text>
-          {staffs.map((staff) => (
-            <Text key={staff.id} style={styles.staffName}>
-              {staff.firstName} {staff.lastName}
-            </Text>
-          ))}
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  const [{ data: workouts, isLoading, error, refetch }] = useAtom(bookedWorkoutsAtom);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Upcoming Workouts</Text>
-
       {workouts && workouts.length > 0 ? (
         <FlatList
           data={workouts}
-          renderItem={renderWorkoutCard}
+          renderItem={BookedWorkoutCard}
           keyExtractor={(item) => item.id.toString()}
         />
       ) : (

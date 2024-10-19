@@ -1,6 +1,12 @@
 import { Workout } from '@/models/workout';
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
+import { ThemedView } from '@/components/ThemedView';
+import { useMutation } from 'react-query';
+import { bookWorkout } from '@/clients/fysikenClient';
+import { useAtom, useAtomValue } from 'jotai';
+import { userAtom } from '@/atoms/userAtom';
+import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -8,6 +14,7 @@ interface WorkoutCardProps {
 
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   const {
+    id: workoutId,
     duration,
     startTime,
     endTime,
@@ -20,6 +27,19 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
     weekDay
   } = workout;
 
+  const user = useAtomValue(userAtom)
+  const [{ data: bookedWorkouts, refetch: refetchMyWorkouts }] = useAtom(bookedWorkoutsAtom);
+
+  const { isLoading, mutate: doBooking } = useMutation<void, Error, void, unknown>("bookWorkout",
+    () => bookWorkout(user!.id, workoutId), {
+    onSuccess: () => {
+      refetchMyWorkouts()
+    },
+    onError: (error) => {
+      Alert.alert("Bokning Misslyckades", error.message)
+    }
+  })
+
   // Format time (you can customize based on your requirement)
   const formattedStartTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const formattedEndTime = endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -29,6 +49,10 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   const isFullyBooked = numBooked >= numSpace;
 
   const extraTitle = `${duration ? duration : ""}${venue ? "  " + venue.name : ""}`
+
+  const isBooked = useMemo(() =>
+    bookedWorkouts ? bookedWorkouts.some((bookedWorkout) => bookedWorkout.id === workoutId) : false
+    , [bookedWorkouts, workoutId]);
 
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8}>
@@ -50,12 +74,15 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
       </View>
 
       <View style={styles.staffSection}>
-        <Text style={styles.staffTitle}>Staff:</Text>
-        {staffs.map((staff) => (
-          <Text key={staff.id} style={styles.staffName}>
-            {staff.firstName} {staff.lastName}
-          </Text>
-        ))}
+        <View>
+          <Text style={styles.staffTitle}>Staff:</Text>
+          {staffs.map((staff) => (
+            <Text key={staff.id} style={styles.staffName}>
+              {staff.firstName} {staff.lastName}
+            </Text>
+          ))}
+        </View>
+        <Button title="Boka" disabled={isLoading || isBooked} onPress={() => doBooking()} />
       </View>
     </TouchableOpacity>
   );
@@ -110,6 +137,8 @@ const styles = StyleSheet.create({
   staffSection: {
     borderTopWidth: 1,
     borderTopColor: '#eee',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     paddingTop: 10,
   },
   staffTitle: {

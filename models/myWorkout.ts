@@ -1,7 +1,7 @@
 import { parseStaff, Staff } from "./user";
 import { WorkoutType } from "./workout";
 
-export interface MyWorkout {
+export interface BookedWorkout {
   id: number;
   extraTitle: string;
   startTime: string;
@@ -9,25 +9,12 @@ export interface MyWorkout {
   isBooked: boolean;
   numBooked: number;
   numSpace: number;
-  isQueued: boolean;
+  inQueue: boolean;
   workoutType: WorkoutType;
   staffs: Staff[];
 }
 
-export interface WorkoutType {
-  id: number;
-  name: string;
-}
-
-type BaseUser = {
-  id: number;
-  firstName: string;
-  lastName: String;
-};
-
-export type Staff = BaseUser;
-
-export function parseMyWorkout(data: any): MyWorkout {
+export function parseMyWorkout(data: any): BookedWorkout {
   try {
     return {
       id: data.id,
@@ -36,7 +23,7 @@ export function parseMyWorkout(data: any): MyWorkout {
       endTime: data.endTime,
       numBooked: data.numBooked,
       numSpace: data.space,
-      isQueued: data.inQueue,
+      inQueue: data.inQueue,
       workoutType: data.workoutType,
       isBooked: data.booked,
       staffs: data.staffs.map(parseStaff),

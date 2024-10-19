@@ -88,10 +88,11 @@ export const fetchMyWorkouts = (): Promise<MyWorkout[]> => {
 };
 
 export const bookWorkout = (
-  workoutId: number,
-  userId: number
+  userId: number,
+  workoutId: number
 ): Promise<void> => {
   const url = `${BASE_URL}/memberapi/workoutBooking/add?workout=${workoutId}&method=trainingcard&user_id=${userId}`;
+  console.log(userId, workoutId);
 
   const fetchMyWorkoutQuery = fetch(encodeURI(url), {
     method: "POST",
