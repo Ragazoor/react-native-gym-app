@@ -32,6 +32,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="google"
+        options={{
+          title: 'Google',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'radio' : 'radio-outline'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

@@ -12,7 +12,6 @@ npm-debug.*
 web-build/
 .idea/**
 .env
-android/app/**
 
 # macOS
 .DS_Store
@@ -23,4 +22,8 @@ android/app/**
 expo-env.d.ts
 # @end expo-cli
 
-**.gradle**
+google-services.json
+GoogleService-Info.plist
+
+/android
+/ios
