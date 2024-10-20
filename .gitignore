@@ -12,6 +12,7 @@ npm-debug.*
 web-build/
 .idea/**
 .env
+android/app/**
 
 # macOS
 .DS_Store
@@ -21,3 +22,5 @@ web-build/
 
 expo-env.d.ts
 # @end expo-cli
+
+**.gradle**

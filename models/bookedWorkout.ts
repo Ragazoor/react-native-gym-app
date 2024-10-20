@@ -16,7 +16,7 @@ export interface BookedWorkout {
   weekDay: string;
 }
 
-export function parseMyWorkout(data: any): BookedWorkout {
+export function parseBookedWorkout(data: any): BookedWorkout {
   try {
     return {
       id: data.id,

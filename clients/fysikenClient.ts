@@ -1,4 +1,4 @@
-import { MyWorkout, parseMyWorkout } from "@/models/bookedWorkout";
+import { BookedWorkout, parseBookedWorkout } from "@/models/bookedWorkout";
 import { parseUser, User } from "@/models/user";
 import { parseWorkout, Workout } from "@/models/workout";
 
@@ -19,12 +19,11 @@ export const login = (username: string, password: string): Promise<User> => {
     body: JSON.stringify(body),
   }).then(async (response) => {
     const status = await response.status;
+    const jsonResp = await response.json();
     if (status == 200) {
-      const jsonResp = await response.json();
       const user = parseUser(jsonResp);
       return user;
     } else {
-      const jsonResp = await response.json();
       throw new Error(
         `Login misslyckades med status ${status}: ${jsonResp.message}`
       );
@@ -57,7 +56,7 @@ export const fetchWorkouts = (
   return fetchWorkoutQuery;
 };
 
-export const fetchMyWorkouts = (): Promise<MyWorkout[]> => {
+export const fetchMyWorkouts = (): Promise<BookedWorkout[]> => {
   const today = new Date();
   const isoArray = today.toISOString().split("T");
   const dateStr = isoArray[0];
@@ -73,13 +72,12 @@ export const fetchMyWorkouts = (): Promise<MyWorkout[]> => {
     },
   }).then(async (response) => {
     const status = await response.status;
+    const jsonResp = await response.json();
     if (status === 200) {
-      const jsonResp = await response.json();
-      return jsonResp["workouts"].map(parseMyWorkout);
+      return jsonResp["workouts"].map(parseBookedWorkout);
     } else {
-      const jsonResp = await response.json();
       throw new Error(
-        `Hämtning av pass misslyckades med status ${status}: ${jsonResp.message}`
+        `Hämtning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
       );
     }
   });
@@ -141,27 +139,24 @@ export const removeWorkout = (
   return removeWorkoutQuery;
 };
 
-export const getCurrentUser = (): Promise<User> => {
+export const getCurrentUser = async (): Promise<User> => {
   const url = `${BASE_URL}/memberapi/get/current`;
 
-  const getUserQuery = fetch(encodeURI(url), {
+  const response = await fetch(encodeURI(url), {
     method: "GET",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-  }).then(async (response) => {
-    const status = await response.status;
-    if (status === 200) {
-      const jsonResp = await response.json();
-      return parseUser(jsonResp);
-    } else {
-      const jsonResp = await response.json();
-      throw new Error(
-        `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
-      );
-    }
   });
 
-  return getUserQuery;
+  const status = response.status;
+  const jsonResp = await response.json();
+  if (status === 200) {
+    return parseUser(jsonResp);
+  } else {
+    throw new Error(
+      `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
+    );
+  }
 };

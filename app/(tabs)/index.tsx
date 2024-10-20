@@ -1,4 +1,4 @@
-import { StyleSheet, Text, FlatList, Button, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, FlatList, Button } from 'react-native';
 
 import { MuscleEmoji } from '@/components/MuscleEmoji';
 import { ThemedText } from '@/components/ThemedText';
@@ -10,7 +10,7 @@ import { useQuery } from 'react-query';
 import WorkoutCard from '@/components/WorkoutCard';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import FilterButton from '@/components/FilterButton';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { selectedVenuesListAtom as selectedVenuesAtom } from '@/atoms/filterVenuesAtom';
 
 function getInitStartDate(): Date {
@@ -26,8 +26,8 @@ function getInitEndDate(): Date {
 }
 
 export default function WorkoutsScreen() {
-  const [startDate, setStartDate] = useState(getInitStartDate());
-  const [endDate, setEndDate] = useState(getInitEndDate());
+  const startDate = getInitStartDate();
+  const endDate = getInitEndDate();
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDate] = useState(new Date());

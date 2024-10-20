@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Button, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';

@@ -2,7 +2,6 @@ import { userAtom } from '@/atoms/userAtom';
 import ProfilePage from '@/components/ProfilePage';
 import BookedWorkouts from '@/components/BookedWorkouts';
 import { useAtomValue } from 'jotai';
-import { ScrollView } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
