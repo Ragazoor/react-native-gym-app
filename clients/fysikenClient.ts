@@ -156,7 +156,7 @@ export const getCurrentUser = async (): Promise<User> => {
     return parseUser(jsonResp);
   } else {
     throw new Error(
-      `Bokning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
+      `Kunde inte hämta användare. Statuskod ${status}: ${jsonResp.message}`
     );
   }
 };

@@ -3,25 +3,46 @@ import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 import { router } from 'expo-router';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { User } from '@/models/user';
 import { getCurrentUser } from '@/clients/fysikenClient';
+import {
+  GoogleSignin,
+  User as GoogleUser,
+} from '@react-native-google-signin/google-signin';
+import { getCurrentGoogleUser, googleSignIn } from '@/clients/googleClient';
+import { googleUserAtom } from '@/atoms/googleUserAtom';
+import { useEffect } from 'react';
 
 export default function SplashScreen() {
 
-  const setUser = useSetAtom(userAtom)
+  GoogleSignin.configure({
+    scopes: ['https://www.googleapis.com/auth/calendar'],
+    webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+  });
 
-  const { isLoading, error } = useQuery<User, Error, User>("getCurrentUser",
-    () => getCurrentUser(), {
+
+  const [fysikenUser, setFysikenUser] = useAtom(userAtom);
+  const setGoogleUser = useSetAtom(googleUserAtom);
+
+  const { } = useQuery<User, Error, User>("getCurrentFysikenUser",
+    getCurrentUser, {
     onSuccess: (data) => {
-      setUser(data);
+      setFysikenUser(data);
       router.replace("/(tabs)");
     },
     onError: () => {
       router.replace("/login");
+    }
+  });
+
+  useQuery<GoogleUser, Error, GoogleUser>("getCurrentGoogleUser",
+    getCurrentGoogleUser, {
+    onSuccess: (data) => {
+      setGoogleUser(data);
     },
-  })
+  });
 
   return (
     <SafeAreaView style={styles.container}>

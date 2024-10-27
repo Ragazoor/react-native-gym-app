@@ -24,7 +24,7 @@ const BookedWorkoutCard: React.FC<BookedWorkoutCardProps> = ({ workout }) => {
   } = workout;
 
   const user = useAtomValue(userAtom);
-  const { isRemovingBooking, removeBooking } = useRemoveBooking(user!.id, workoutId);
+  const { isRemovingWorkout, removeBooking } = useRemoveBooking(user!.id, workout);
 
   const formattedStartTime = new Date(startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const formattedEndTime = new Date(endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -59,7 +59,7 @@ const BookedWorkoutCard: React.FC<BookedWorkoutCardProps> = ({ workout }) => {
           </Text>
         ))}
       </View>
-      <Button title="Avboka" color={"red"} disabled={isRemovingBooking} onPress={() => removeBooking()} />
+      <Button title="Avboka" color={"red"} disabled={isRemovingWorkout} onPress={() => removeBooking()} />
 
     </TouchableOpacity>
   );

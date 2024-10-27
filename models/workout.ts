@@ -1,18 +1,21 @@
 import { parseStaff, Staff } from "./user";
 
-export interface Workout {
+export type BaseWorkout = {
   id: number;
-  duration: string;
   startTime: Date;
   endTime: Date;
+  workoutType: WorkoutType;
+  venue?: Venue;
+};
+
+export type Workout = BaseWorkout & {
+  duration: string;
   numBooked: number;
   numSpace: number;
   numQueued: number;
-  workoutType: WorkoutType;
   staffs: Staff[];
   weekDay: string;
-  venue?: Venue;
-}
+};
 
 export interface WorkoutType {
   id: number;
@@ -53,7 +56,7 @@ export function parseWorkout(data: any): Workout {
   }
 }
 
-function parseVenue(data: any): Venue | undefined {
+export function parseVenue(data: any): Venue | undefined {
   if (data.resources.length === 0) {
     return undefined;
   } else {

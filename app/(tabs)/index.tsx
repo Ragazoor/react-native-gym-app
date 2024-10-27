@@ -12,6 +12,8 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import FilterButton from '@/components/FilterButton';
 import { useAtomValue } from 'jotai';
 import { selectedVenuesListAtom as selectedVenuesAtom } from '@/atoms/filterVenuesAtom';
+import { EvilIcons, Ionicons } from '@expo/vector-icons';
+import { googleUserAtom } from '@/atoms/googleUserAtom';
 
 function getInitStartDate(): Date {
   const date = new Date();
@@ -33,6 +35,7 @@ export default function WorkoutsScreen() {
   const [selectedDateTime, setSelectedDate] = useState(new Date());
   const [filteredWorkouts, setFilteredWorkouts] = useState(allWorkouts);
   const selectedVenues = useAtomValue(selectedVenuesAtom);
+  const googleUser = useAtomValue(googleUserAtom);
 
   const { data: fetchedWorkouts, isLoading, error, refetch } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
 
@@ -75,6 +78,8 @@ export default function WorkoutsScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Fysiken Pass</ThemedText>
         <MuscleEmoji />
+        {googleUser && <Ionicons name='cloud' size={32} />}
+        {!googleUser && <Ionicons name='cloud-offline' size={32} />}
       </ThemedView>
       <ThemedView style={styles.filterContainer}>
         <ThemedText style={styles.buttonTitle} type="subtitle">{selectedWeekDay}</ThemedText>

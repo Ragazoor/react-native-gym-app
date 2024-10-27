@@ -7,7 +7,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
 import { useRemoveBooking } from '@/hooks/useRemoveBooking';
-import { useMakeBooking } from '@/hooks/useMakeBooking';
+import { useCreateBooking } from '@/hooks/useCreateBooking';
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -29,11 +29,11 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
   } = workout;
 
   const user = useAtomValue(userAtom)
-  const [{ data: bookedWorkouts, refetch: refetchMyWorkouts }] = useAtom(bookedWorkoutsAtom);
+  const [{ data: bookedWorkouts }] = useAtom(bookedWorkoutsAtom);
 
-  const { isBooking, makeBooking } = useMakeBooking(user!.id, workoutId);
+  const { isBooking, makeBooking } = useCreateBooking(user!.id, workout);
 
-  const { isRemovingBooking, removeBooking } = useRemoveBooking(user!.id, workoutId);
+  const { isRemovingWorkout, removeBooking: removeWorkout } = useRemoveBooking(user!.id, workout);
 
   // Format time (you can customize based on your requirement)
   const formattedStartTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -78,7 +78,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
           ))}
         </View>
         {!isBooked && <Button title="Boka" disabled={isBooking} onPress={() => makeBooking()} />}
-        {isBooked && <Button title="Avboka" color={"red"} disabled={isRemovingBooking} onPress={() => removeBooking()} />}
+        {isBooked && <Button title="Avboka" color={"red"} disabled={isRemovingWorkout} onPress={() => removeWorkout()} />}
       </View>
     </TouchableOpacity>
   );
