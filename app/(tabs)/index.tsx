@@ -78,8 +78,8 @@ export default function WorkoutsScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Fysiken Pass</ThemedText>
         <MuscleEmoji />
-        {googleUser && <Ionicons name='cloud' size={32} />}
-        {!googleUser && <Ionicons name='cloud-offline' size={32} />}
+        {googleUser && <Ionicons name='cloud-outline' size={32} />}
+        {!googleUser && <Ionicons name='cloud-offline-outline' size={32} />}
       </ThemedView>
       <ThemedView style={styles.filterContainer}>
         <ThemedText style={styles.buttonTitle} type="subtitle">{selectedWeekDay}</ThemedText>
