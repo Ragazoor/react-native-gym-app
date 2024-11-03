@@ -36,7 +36,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     output: "static",
     favicon: "./assets/images/favicon.png",
   },
-  plugins: ["expo-router", "@react-native-google-signin/google-signin"],
+  plugins: [
+    "expo-router",
+    "@react-native-google-signin/google-signin",
+    "@react-native-firebase/app",
+    "@react-native-firebase/auth",
+    "@react-native-firebase/crashlytics",
+  ],
   experiments: {
     typedRoutes: true,
   },
