@@ -6,11 +6,13 @@ import { BaseWorkout, Workout } from "@/models/workout";
 import { useAtom } from "jotai";
 import { Alert } from "react-native";
 import { useMutation } from "react-query";
+import { useCreateGoogleEvent } from "./useCreateGoogleEvent";
 
 export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
   const [{ refetch: refetchMyWorkouts }] = useAtom(bookedWorkoutsAtom);
 
-  const workoutEvent = buildGoogleEvent(workout);
+  const { isCreatingCalendarEvent, doCreateCalendarEvent } =
+    useCreateGoogleEvent(workout);
   const { isLoading: isBooking, mutate: makeBooking } = useMutation<
     void,
     Error,
@@ -18,7 +20,7 @@ export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
     unknown
   >("bookWorkout", () => bookWorkout(userId, workout.id), {
     onSuccess: () => {
-      createCalendarEvent(workoutEvent);
+      doCreateCalendarEvent();
       refetchMyWorkouts();
     },
     onError: (error) => {
@@ -26,5 +28,5 @@ export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
     },
   });
 
-  return { isBooking, makeBooking };
+  return { isBooking: isBooking || isCreatingCalendarEvent, makeBooking };
 };

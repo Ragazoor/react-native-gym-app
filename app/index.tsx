@@ -9,11 +9,8 @@ import { User } from '@/models/user';
 import { getCurrentUser } from '@/clients/fysikenClient';
 import {
   GoogleSignin,
-  User as GoogleUser,
 } from '@react-native-google-signin/google-signin';
-import { getCurrentGoogleUser, googleSignIn } from '@/clients/googleClient';
 import { googleUserAtom } from '@/atoms/googleUserAtom';
-import { useEffect } from 'react';
 
 export default function SplashScreen() {
 
@@ -35,13 +32,6 @@ export default function SplashScreen() {
     onError: () => {
       router.replace("/login");
     }
-  });
-
-  useQuery<GoogleUser, Error, GoogleUser>("getCurrentGoogleUser",
-    getCurrentGoogleUser, {
-    onSuccess: (data) => {
-      setGoogleUser(data);
-    },
   });
 
   return (

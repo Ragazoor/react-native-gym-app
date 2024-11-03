@@ -1,9 +1,11 @@
 import { userAtom } from '@/atoms/userAtom';
+import { getWorkoutClendarEvent } from '@/clients/googleClient';
 import { useRemoveBooking } from '@/hooks/useRemoveBooking';
 import { BookedWorkout } from '@/models/bookedWorkout';
 import { useAtomValue } from 'jotai';
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { useQuery } from 'react-query';
 
 interface BookedWorkoutCardProps {
   workout: BookedWorkout;
@@ -11,7 +13,6 @@ interface BookedWorkoutCardProps {
 
 const BookedWorkoutCard: React.FC<BookedWorkoutCardProps> = ({ workout }) => {
   const {
-    id: workoutId,
     extraTitle,
     startTime,
     endTime,

@@ -17,8 +17,8 @@ export function parseBookedWorkout(data: any): BookedWorkout {
     return {
       id: data.id,
       extraTitle: data.extra_title,
-      startTime: data.startTime,
-      endTime: data.endTime,
+      startTime: new Date(data.startTime),
+      endTime: new Date(data.endTime),
       numBooked: data.numBooked,
       numSpace: data.space,
       numQueued: data.numQueue,

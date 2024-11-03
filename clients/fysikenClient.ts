@@ -1,6 +1,8 @@
 import { BookedWorkout, parseBookedWorkout } from "@/models/bookedWorkout";
 import { parseUser, User } from "@/models/user";
 import { parseWorkout, Workout } from "@/models/workout";
+import CookieManager from "@react-native-cookies/cookies";
+import { k } from "@tanstack/query-core/build/legacy/hydration-mKPlgzt9";
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL!;
 
@@ -56,7 +58,7 @@ export const fetchWorkouts = (
   return fetchWorkoutQuery;
 };
 
-export const fetchMyWorkouts = (): Promise<BookedWorkout[]> => {
+export const fetchMyWorkouts = async (): Promise<BookedWorkout[]> => {
   const today = new Date();
   const isoArray = today.toISOString().split("T");
   const dateStr = isoArray[0];
@@ -64,25 +66,62 @@ export const fetchMyWorkouts = (): Promise<BookedWorkout[]> => {
 
   const url = `${BASE_URL}/memberapi/bookings/get?fromDate=${dateStr}:${timeStr}`;
 
-  const fetchMyWorkoutQuery = fetch(encodeURI(url), {
+  const response = await fetch(encodeURI(url), {
     method: "GET",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-  }).then(async (response) => {
-    const status = await response.status;
-    const jsonResp = await response.json();
-    if (status === 200) {
-      return jsonResp["workouts"].map(parseBookedWorkout);
-    } else {
-      throw new Error(
-        `Hämtning av pass misslyckades. Statuskod ${status}: ${jsonResp.message}`
-      );
-    }
   });
 
-  return fetchMyWorkoutQuery;
+  const jsonResp = await response.json();
+  if (response.status === 200) {
+    return jsonResp["workouts"].map(parseBookedWorkout);
+  } else {
+    throw new Error(
+      `Hämtning av pass misslyckades. Statuskod ${response.status}: ${jsonResp.message}`
+    );
+  }
+};
+
+type SessionRecord = {
+  [userId: number]: {
+    session: string;
+  };
+};
+const sessionRecord: SessionRecord = {
+  1: {
+    session: "session1",
+  },
+};
+
+export const fetchFriendWorkouts = async (
+  userId: number
+): Promise<BookedWorkout[]> => {
+  const today = new Date();
+  const isoArray = today.toISOString().split("T");
+  const dateStr = isoArray[0];
+  const timeStr = isoArray[1].split(":").slice(0, 2).join(":");
+
+  const url = `${BASE_URL}/memberapi/bookings/get?fromDate=${dateStr}:${timeStr}`;
+
+  const response = await fetch(encodeURI(url), {
+    method: "GET",
+    credentials: "omit",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `session=${sessionRecord[userId].session}`,
+    },
+  });
+
+  const jsonResp = await response.json();
+  if (response.status === 200) {
+    return jsonResp["workouts"].map(parseBookedWorkout);
+  } else {
+    throw new Error(
+      `Hämtning av pass misslyckades. Statuskod ${response.status}: ${jsonResp.message}`
+    );
+  }
 };
 
 export const bookWorkout = (

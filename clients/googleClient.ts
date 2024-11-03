@@ -4,10 +4,10 @@ import {
   isSuccessResponse,
   statusCodes,
   User as GoogleUser,
+  GetTokensResponse,
 } from "@react-native-google-signin/google-signin";
 import { CreateGoogleEventDto } from "@/models/createGoogleEventDto";
 import { GoogleEventDto, parseGoogleEvent } from "@/models/dtos/googlEventDto";
-import { formatDate } from "@/utils/dateUtils";
 
 export const googleSignIn = async (): Promise<GoogleUser> => {
   try {
@@ -23,14 +23,14 @@ export const googleSignIn = async (): Promise<GoogleUser> => {
   }
 };
 
-export const getCurrentGoogleUser = async (): Promise<GoogleUser> => {
+export const checkSignIn = async (): Promise<GoogleUser> => {
   try {
-    const response = await GoogleSignin.signInSilently();
-    switch (response.type) {
+    const silentSignInResp = await GoogleSignin.signInSilently();
+    switch (silentSignInResp.type) {
       case "success":
-        return response.data;
+        return silentSignInResp.data;
       case "noSavedCredentialFound":
-        throw new Error("Ingen sparad google session hittades");
+        return await googleSignIn();
       default:
         throw new Error("Unknown error");
     }
@@ -54,27 +54,22 @@ const handleGoogleError = (error: unknown): GoogleUser => {
   }
 };
 
-export const listGoogleCalendars = async () => {
-  const authToken = await GoogleSignin.getTokens();
-
-  const response = await fetch(
-    "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${authToken.accessToken}`,
-      },
-    }
-  );
-
-  return await response.json();
+const getAuthToken = async (): Promise<GetTokensResponse> => {
+  try {
+    const authToken = await GoogleSignin.getTokens();
+    return authToken;
+  } catch (error) {
+    await checkSignIn();
+    const authToken = await GoogleSignin.getTokens();
+    return authToken;
+  }
 };
 
 export const createCalendarEvent = async (
   event: CreateGoogleEventDto
 ): Promise<void> => {
-  const authToken = await GoogleSignin.getTokens();
   const calendarId = "primary";
+  const authToken = await getAuthToken();
 
   await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
@@ -91,7 +86,7 @@ export const createCalendarEvent = async (
 };
 
 export const removeCalendarEvent = async (eventId: string): Promise<void> => {
-  const authToken = await GoogleSignin.getTokens();
+  const authToken = await getAuthToken();
   const calendarId = "primary";
 
   const response = await fetch(
@@ -115,11 +110,10 @@ export const getWorkoutClendarEvent = async (
   workoutEndTime: Date,
   searchString: string
 ): Promise<GoogleEventDto> => {
-  const authToken = await GoogleSignin.getTokens();
+  const authToken = await getAuthToken();
   const calendarId = "primary";
 
-  //const params = `timeMin=${workoutStartTime.toISOString()}&timeMax=${workoutEndTime.toISOString()}&q=${searchString}`;
-  const params = `q=${searchString}`;
+  const params = `timeMin=${workoutStartTime.toISOString()}&timeMax=${workoutEndTime.toISOString()}&q=${searchString}`;
 
   const response = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,

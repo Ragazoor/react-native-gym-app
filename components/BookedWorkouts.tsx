@@ -3,17 +3,9 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 import BookedWorkoutCard from './BookedWorkoutCard';
 import { useAtom } from 'jotai';
 import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
-import CookieManager from '@react-native-cookies/cookies';
 
 const BookedWorkouts: React.FC = () => {
   const [{ data: workouts }] = useAtom(bookedWorkoutsAtom);
-  console.log(workouts);
-  // Get cookies for a url
-  CookieManager.get('https://fysiken.zoezi.se')
-    .then((cookies) => {
-      console.log('CookieManager.get =>', cookies);
-    });
-
 
   return (
     <View style={styles.container}>

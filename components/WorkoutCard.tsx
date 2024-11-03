@@ -1,8 +1,6 @@
 import { Workout } from '@/models/workout';
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
-import { useMutation } from 'react-query';
-import { bookWorkout } from '@/clients/fysikenClient';
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useAtom, useAtomValue } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
