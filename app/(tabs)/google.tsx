@@ -17,7 +17,6 @@ export default function GoogleScreen() {
   const { mutate: doLogin } = useMutation<GoogleUser, Error, void, unknown>("googleSignIn", googleSignIn, {
     onSuccess: (data) => {
       setGoogleUser(data);
-      console.log(data)
     },
     onError: (error) => {
       console.log(error)
