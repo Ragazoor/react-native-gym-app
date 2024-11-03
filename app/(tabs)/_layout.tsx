@@ -33,9 +33,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="google"
+        name="friends"
         options={{
-          title: 'Google',
+          title: 'Friends',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'radio' : 'radio-outline'} color={color} />
           ),

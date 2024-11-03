@@ -1,7 +1,6 @@
 import { VenueName } from "@/models/workout";
 import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
-import { act } from "react-test-renderer";
 
 const initState = {
   [VenueName.GIBRALTARGATAN]: false,

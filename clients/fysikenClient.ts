@@ -95,7 +95,7 @@ const sessionRecord: SessionRecord = {
   },
 };
 
-export const fetchFriendWorkouts = async (
+export const getFriendsWorkouts = async (
   userId: number
 ): Promise<BookedWorkout[]> => {
   const today = new Date();
