@@ -3,14 +3,13 @@ import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 import { router } from 'expo-router';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { User } from '@/models/user';
 import { getCurrentUser } from '@/clients/fysikenClient';
 import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
-import { googleUserAtom } from '@/atoms/googleUserAtom';
 
 export default function SplashScreen() {
 
@@ -20,8 +19,7 @@ export default function SplashScreen() {
   });
 
 
-  const [fysikenUser, setFysikenUser] = useAtom(userAtom);
-  const setGoogleUser = useSetAtom(googleUserAtom);
+  const setFysikenUser = useSetAtom(userAtom);
 
   const { } = useQuery<User, Error, User>("getCurrentFysikenUser",
     getCurrentUser, {
