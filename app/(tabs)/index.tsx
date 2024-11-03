@@ -37,7 +37,7 @@ export default function WorkoutsScreen() {
   const selectedVenues = useAtomValue(selectedVenuesAtom);
   const googleUser = useAtomValue(googleUserAtom);
 
-  const { data: fetchedWorkouts, isLoading, error, refetch } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
+  const { data: fetchedWorkouts } = useQuery('fetchWorkouts', () => fetchWorkouts(startDate, endDate));
 
   const nowDateTime = new Date();
 
