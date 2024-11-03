@@ -9,7 +9,7 @@ export default function ProfileScreen() {
   const user = useAtomValue(userAtom);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       {user && <ProfilePage user={user} />}
       <BookedWorkouts />
     </SafeAreaView>

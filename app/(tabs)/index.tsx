@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
   },
   stepContainer: {
+    flex: 1,
     gap: 8,
     marginBottom: 8,
   },

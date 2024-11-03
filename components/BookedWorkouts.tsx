@@ -26,6 +26,7 @@ const BookedWorkouts: React.FC = () => {
 // Styles for the component
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
   },
   title: {
