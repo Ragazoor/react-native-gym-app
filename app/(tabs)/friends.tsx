@@ -10,6 +10,11 @@ const useGetSandra = async () => {
 
 export default function FriendsScreen() {
   const usersCollection = useGetSandra();
+  // https://rnfirebase.io/auth/social-auth#google
+  // It's possible to signin with Google same way as with calendar.
+  // Use the same method as with google stuff, ensure signedIn, use the tokens and fetch data.
+
+  // Can also use anonymous signin, will try. We're not gonna fetch anything sensistive.
   console.log(usersCollection);
   return (
     <SafeAreaView>
