@@ -54,7 +54,7 @@ const handleGoogleError = (error: unknown): GoogleUser => {
   }
 };
 
-const getAuthToken = async (): Promise<GetTokensResponse> => {
+export const getAuthToken = async (): Promise<GetTokensResponse> => {
   try {
     const authToken = await GoogleSignin.getTokens();
     return authToken;

@@ -11,14 +11,13 @@ import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
 
+GoogleSignin.configure({
+  scopes: ['https://www.googleapis.com/auth/calendar',
+  ],
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+});
+
 export default function SplashScreen() {
-
-  GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/calendar'],
-    webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
-  });
-
-
   const setFysikenUser = useSetAtom(userAtom);
 
   const { } = useQuery<User, Error, User>("getCurrentFysikenUser",

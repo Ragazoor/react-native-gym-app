@@ -2,20 +2,22 @@
 import { SafeAreaView } from 'react-native';
 import FriendWorkouts from '@/components/FriendWorkouts';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import { getAuthToken } from '@/clients/googleClient';
+import { useQuery } from 'react-query';
+
 
 const useGetSandra = async () => {
-  const usersCollection = await firestore().collection('users').doc('82586').get();
-  return usersCollection;
+  const googleCredentials = await getAuthToken();
+  const firebaseCredentials = auth.GoogleAuthProvider.credential(googleCredentials.idToken);
+  await auth().signInWithCredential(firebaseCredentials);
+  const usersCollection = await firestore().collection('users').get();
+  await usersCollection.forEach(a => console.log(a.data()));
 }
 
 export default function FriendsScreen() {
-  const usersCollection = useGetSandra();
-  // https://rnfirebase.io/auth/social-auth#google
-  // It's possible to signin with Google same way as with calendar.
-  // Use the same method as with google stuff, ensure signedIn, use the tokens and fetch data.
+  useQuery('getSandra', useGetSandra);
 
-  // Can also use anonymous signin, will try. We're not gonna fetch anything sensistive.
-  console.log(usersCollection);
   return (
     <SafeAreaView>
       <FriendWorkouts />
