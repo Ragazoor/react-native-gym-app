@@ -8,7 +8,6 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_BASE_URL": "https://fysiken.zoezi.se/api",
         "GOOGLE_SERVICES_FILE": "overriden-in-app.config.ts"
       }
     },
@@ -21,7 +20,6 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_BASE_URL": "https://fysiken.zoezi.se/api",
         "GOOGLE_SERVICES_FILE": "overriden-in-app.config.ts"
       }
     }

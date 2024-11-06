@@ -1,5 +1,5 @@
 import { bookedWorkoutsAtom } from "@/atoms/bookedWorkoutsAtom";
-import { removeWorkout } from "@/clients/fysikenClient";
+import { removeWorkout } from "@/clients/gymClient";
 import { BaseWorkout } from "@/models/workout";
 import { useAtom } from "jotai";
 import { Alert } from "react-native";

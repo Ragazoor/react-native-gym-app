@@ -1,10 +1,8 @@
 import { BookedWorkout, parseBookedWorkout } from "@/models/bookedWorkout";
 import { parseUser, User } from "@/models/user";
 import { parseWorkout, Workout } from "@/models/workout";
-import CookieManager from "@react-native-cookies/cookies";
-import { k } from "@tanstack/query-core/build/legacy/hydration-mKPlgzt9";
 
-const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL!;
+const BASE_URL = process.env.EXPO_PUBLIC_GYM_BASE_URL!;
 
 export const login = (username: string, password: string): Promise<User> => {
   const body = {

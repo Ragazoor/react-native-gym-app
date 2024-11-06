@@ -1,4 +1,4 @@
-import { fetchMyWorkouts } from "@/clients/fysikenClient";
+import { fetchMyWorkouts } from "@/clients/gymClient";
 import { FriendWorkout, Friend } from "@/models/friend";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";

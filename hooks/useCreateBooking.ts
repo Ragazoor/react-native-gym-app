@@ -1,5 +1,5 @@
 import { bookedWorkoutsAtom } from "@/atoms/bookedWorkoutsAtom";
-import { bookWorkout } from "@/clients/fysikenClient";
+import { bookWorkout } from "@/clients/gymClient";
 import { createCalendarEvent } from "@/clients/googleClient";
 import { buildGoogleEvent } from "@/models/createGoogleEventDto";
 import { BaseWorkout, Workout } from "@/models/workout";

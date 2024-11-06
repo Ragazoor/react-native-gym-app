@@ -4,7 +4,7 @@ import { MuscleEmoji } from '@/components/MuscleEmoji';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchWorkouts } from '@/clients/fysikenClient';
+import { fetchWorkouts } from '@/clients/gymClient';
 import { dateToWeekDay as dateTimeToWeekDay, VenueName, Workout } from '@/models/workout';
 import { useQuery } from 'react-query';
 import WorkoutCard from '@/components/WorkoutCard';

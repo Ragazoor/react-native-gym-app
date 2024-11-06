@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { useSetAtom } from 'jotai';
 import { userAtom } from '@/atoms/userAtom';
 import { User } from '@/models/user';
-import { getCurrentUser } from '@/clients/fysikenClient';
+import { getCurrentUser } from '@/clients/gymClient';
 import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
