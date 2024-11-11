@@ -1,31 +1,23 @@
 import { userAtom } from "@/atoms/userAtom";
-import { useRemoveBooking } from "@/hooks/useRemoveBooking";
 import { BookedWorkout } from "@/models/bookedWorkout";
 import { useAtomValue } from "jotai";
 import React from "react";
 import { StyleSheet, TouchableOpacity, Button } from "react-native";
 import BookedWorkoutInfo from "./BookedWorkoutInfo";
+import { useCreateBooking } from "@/hooks/useCreateBooking";
 
-interface BookedWorkoutCardProps {
+interface FriendWorkoutCardProps {
   workout: BookedWorkout;
 }
 
-const BookedWorkoutCard: React.FC<BookedWorkoutCardProps> = ({ workout }) => {
+const FriendWorkoutCard: React.FC<FriendWorkoutCardProps> = ({ workout }) => {
   const user = useAtomValue(userAtom);
-  const { isRemovingWorkout, removeBooking } = useRemoveBooking(
-    user!.id,
-    workout
-  );
+  const { isBooking, makeBooking } = useCreateBooking(user!.id, workout);
 
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8} key={workout.id}>
       <BookedWorkoutInfo workout={workout} />
-      <Button
-        title="Avboka"
-        color={"red"}
-        disabled={isRemovingWorkout}
-        onPress={() => removeBooking()}
-      />
+      <Button title="Boka" disabled={isBooking} onPress={() => makeBooking()} />
     </TouchableOpacity>
   );
 };
@@ -107,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookedWorkoutCard;
+export default FriendWorkoutCard;

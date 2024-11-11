@@ -1,26 +1,27 @@
-
-import { SafeAreaView } from 'react-native';
-import FriendWorkouts from '@/components/FriendWorkouts';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import { getAuthToken } from '@/clients/googleClient';
-import { useQuery } from 'react-query';
-
-
-const useGetSandra = async () => {
-  const googleCredentials = await getAuthToken();
-  const firebaseCredentials = auth.GoogleAuthProvider.credential(googleCredentials.idToken);
-  await auth().signInWithCredential(firebaseCredentials);
-  const usersCollection = await firestore().collection('users').get();
-  await usersCollection.forEach(a => console.log(a.data()));
-}
+import { SafeAreaView } from "react-native";
+import { StyleSheet } from "react-native";
+import FriendWorkouts from "@/components/FriendWorkouts";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import UserIcon from "@/components/UserIcon";
 
 export default function FriendsScreen() {
-  useQuery('getSandra', useGetSandra);
-
   return (
     <SafeAreaView>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Kompisar</ThemedText>
+        <UserIcon />
+      </ThemedView>
       <FriendWorkouts />
     </SafeAreaView>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 52,
+  },
+});

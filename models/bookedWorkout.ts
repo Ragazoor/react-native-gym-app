@@ -23,7 +23,10 @@ export function parseBookedWorkout(data: any): BookedWorkout {
       numSpace: data.space,
       numQueued: data.numQueue,
       inQueue: data.inQueue,
-      workoutType: data.workoutType,
+      workoutType: {
+        id: data.workoutType.id,
+        name: data.workoutType.name,
+      },
       isBooked: data.booked,
       staffs: data.staffs.map(parseStaff),
       weekDay: dateToWeekDay(new Date(data.startTime)),

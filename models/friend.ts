@@ -1,8 +1,8 @@
 import { BookedWorkout } from "./bookedWorkout";
 
 export type Friend = {
-  id: number;
-  name: string;
+  userId: string;
+  userName: string;
 };
 
 export type FriendWorkout = Friend & {
