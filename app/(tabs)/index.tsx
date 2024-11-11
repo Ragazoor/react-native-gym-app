@@ -4,49 +4,36 @@ import { MuscleEmoji } from "@/components/MuscleEmoji";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchWorkouts } from "@/clients/gymClient";
 import {
   dateToWeekDay as dateTimeToWeekDay,
   VenueName,
   Workout,
 } from "@/models/workout";
-import { useQuery } from "react-query";
 import WorkoutCard from "@/components/WorkoutCard";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import FilterButton from "@/components/FilterButton";
-import { useAtomValue } from "jotai";
+import VenueFilterButton from "@/components/VenueFilterButton";
+import { useAtom, useAtomValue } from "jotai";
 import { selectedVenuesListAtom as selectedVenuesAtom } from "@/atoms/filterVenuesAtom";
-import { Ionicons } from "@expo/vector-icons";
-import { googleUserAtom } from "@/atoms/googleUserAtom";
-
-function getInitStartDate(): Date {
-  const date = new Date();
-  date.setDate(date.getDate() - 1);
-  return date;
-}
-
-function getInitEndDate(): Date {
-  const date = new Date();
-  date.setDate(date.getDate() + 8);
-  return date;
-}
+import WorkoutFilterIcon from "@/components/WorkoutFilterIcon";
+import {
+  fetchWorkoutsAtomQuery,
+  fetchWorkoutsStartDateAtom,
+  workoutTypeFilterAtom,
+} from "@/atoms/fetchWorkoutsAtom";
 
 export default function WorkoutsScreen() {
-  const startDate = getInitStartDate();
-  const endDate = getInitEndDate();
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDate] = useState(new Date());
   const [filteredWorkouts, setFilteredWorkouts] = useState(allWorkouts);
   const selectedVenues = useAtomValue(selectedVenuesAtom);
-  const googleUser = useAtomValue(googleUserAtom);
+  const startDate = useAtomValue(fetchWorkoutsStartDateAtom);
+  const workoutTypeFilter = useAtomValue(workoutTypeFilterAtom);
+  console.log("workoutTypeFilter", workoutTypeFilter);
 
-  const { data: fetchedWorkouts } = useQuery("fetchWorkouts", () =>
-    fetchWorkouts(startDate, endDate)
-  );
-
+  const [{ data: fetchedWorkouts }] = useAtom(fetchWorkoutsAtomQuery);
   const nowDateTime = new Date();
 
   const selectedWeekDay = useMemo(() => {
@@ -74,14 +61,24 @@ export default function WorkoutsScreen() {
                 .includes(workout.venue.name)
             : true;
 
+        const isOkWorkoutType =
+          workoutTypeFilter.length > 0
+            ? workoutTypeFilter
+                .map((wt) => wt.name)
+                .includes(workout.workoutType.name)
+            : true;
+
+        console.log("workout", isOkWorkoutType);
+
         return (
           workoutDate === selectedDate &&
           workout.endTime > nowDateTime &&
-          isOkVenue
+          isOkVenue &&
+          isOkWorkoutType
         );
       })
     );
-  }, [selectedDateTime, allWorkouts, selectedVenues]);
+  }, [selectedDateTime, allWorkouts, selectedVenues, workoutTypeFilter]);
 
   const onSelectDateTime = (
     event: DateTimePickerEvent,
@@ -97,8 +94,7 @@ export default function WorkoutsScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Fysiken Pass</ThemedText>
         <MuscleEmoji />
-        {googleUser && <Ionicons name="cloud-outline" size={32} />}
-        {!googleUser && <Ionicons name="cloud-offline-outline" size={32} />}
+        <WorkoutFilterIcon />
       </ThemedView>
       <ThemedView style={styles.filterContainer}>
         <ThemedText style={styles.buttonTitle} type="subtitle">
@@ -115,8 +111,8 @@ export default function WorkoutsScreen() {
         )}
       </ThemedView>
       <ThemedView style={styles.venueFilterContainer}>
-        <FilterButton buttonVenueName={VenueName.GIBRALTARGATAN} />
-        <FilterButton buttonVenueName={VenueName.KASTERNTORGET} />
+        <VenueFilterButton buttonVenueName={VenueName.GIBRALTARGATAN} />
+        <VenueFilterButton buttonVenueName={VenueName.KASTERNTORGET} />
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>

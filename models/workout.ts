@@ -43,7 +43,10 @@ export function parseWorkout(data: any): Workout {
       numBooked: data.numBooked,
       numSpace: data.space,
       numQueued: data.numQueue,
-      workoutType: data.workoutType,
+      workoutType: {
+        id: data.workoutType.id,
+        name: data.workoutType.name,
+      },
       staffs: data.staffs.map(parseStaff),
       weekDay: dateToWeekDay(new Date(data.startTime)),
       venue: parseVenue(data),
