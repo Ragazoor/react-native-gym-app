@@ -1,32 +1,21 @@
-import { StyleSheet, Text } from "react-native";
+import { Alert, StyleSheet, Text } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 import { router } from "expo-router";
-import { useSetAtom } from "jotai";
-import { userAtom } from "@/atoms/userAtom";
-import { User } from "@/models/user";
-import { getCurrentUser } from "@/clients/gymClient";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { checkSignIn } from "@/clients/googleClient";
+import { User as GoogleUser } from "@react-native-google-signin/google-signin";
 
-GoogleSignin.configure({
-  scopes: ["https://www.googleapis.com/auth/calendar"],
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-});
-
-export default function SplashScreen() {
-  const setFysikenUser = useSetAtom(userAtom);
-
-  const {} = useQuery<User, Error, User>(
-    "getCurrentFysikenUser",
-    getCurrentUser,
+export default function GoogleScreen() {
+  const {} = useQuery<GoogleUser, Error, GoogleUser>(
+    "ensureGogleSignIn",
+    checkSignIn,
     {
-      onSuccess: (data) => {
-        setFysikenUser(data);
-        router.replace("/google");
+      onSuccess: () => {
+        router.replace("/(tabs)");
       },
       onError: () => {
-        router.replace("/login");
+        Alert.alert("Google Sign In Failed", "Please sign in with Google");
       },
     }
   );
