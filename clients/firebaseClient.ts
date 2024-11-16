@@ -3,6 +3,9 @@ import { getAuthToken } from "./googleClient";
 import firestore from "@react-native-firebase/firestore";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Friend, FriendWorkout } from "@/models/friend";
+import CookieManager from "@react-native-cookies/cookies";
+
+const BASE_URL = process.env.EXPO_PUBLIC_GYM_BASE_URL!;
 
 const login = async (): Promise<FirebaseAuthTypes.User> => {
   const googleCredentials = await getAuthToken();
@@ -138,3 +141,19 @@ function toDateTime(secs: number) {
   t.setSeconds(secs);
   return t;
 }
+
+export const updateCookie = async (): Promise<void> => {
+  const user = await ensureLoggedIn();
+  const cookies = await CookieManager.get(BASE_URL);
+
+  const sessionCookie = cookies["session"].value;
+
+  const result = await firestore()
+    .collection("users")
+    .doc(`${user.uid}`)
+    .collection("private")
+    .doc("fysiken")
+    .update({ lastSession: sessionCookie, randomNum: Math.random() });
+
+  return result;
+};

@@ -31,7 +31,6 @@ export default function WorkoutsScreen() {
   const selectedVenues = useAtomValue(selectedVenuesAtom);
   const startDate = useAtomValue(fetchWorkoutsStartDateAtom);
   const workoutTypeFilter = useAtomValue(workoutTypeFilterAtom);
-  console.log("workoutTypeFilter", workoutTypeFilter);
 
   const [{ data: fetchedWorkouts }] = useAtom(fetchWorkoutsAtomQuery);
   const nowDateTime = new Date();
@@ -67,8 +66,6 @@ export default function WorkoutsScreen() {
                 .map((wt) => wt.name)
                 .includes(workout.workoutType.name)
             : true;
-
-        console.log("workout", isOkWorkoutType);
 
         return (
           workoutDate === selectedDate &&

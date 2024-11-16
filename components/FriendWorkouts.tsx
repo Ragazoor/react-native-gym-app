@@ -24,7 +24,7 @@ export default function FriendWorkouts() {
       </TouchableOpacity>
       {expandedFriend === friend.userId &&
         friend.workouts.map((workout) => (
-          <FriendWorkoutCard workout={workout} />
+          <FriendWorkoutCard workout={workout} key={workout.id} />
         ))}
     </ThemedView>
   );

@@ -7,12 +7,16 @@ import { useAtom } from "jotai";
 import { Alert } from "react-native";
 import { useMutation } from "react-query";
 import { useCreateGoogleEvent } from "./useCreateGoogleEvent";
+import { useUpdateFirebaseCookie } from "./useUpdateFirebaseCookie";
 
 export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
   const [{ refetch: refetchMyWorkouts }] = useAtom(bookedWorkoutsAtom);
 
   const { isCreatingCalendarEvent, doCreateCalendarEvent } =
     useCreateGoogleEvent(workout);
+
+  const { isUpdatingCookie, doUpdateCookie } = useUpdateFirebaseCookie();
+
   const { isLoading: isBooking, mutate: makeBooking } = useMutation<
     void,
     Error,
@@ -20,6 +24,7 @@ export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
     unknown
   >("bookWorkout", () => bookWorkout(userId, workout.id), {
     onSuccess: () => {
+      doUpdateCookie();
       doCreateCalendarEvent();
       refetchMyWorkouts();
     },
@@ -28,5 +33,8 @@ export const useCreateBooking = (userId: number, workout: BaseWorkout) => {
     },
   });
 
-  return { isBooking: isBooking || isCreatingCalendarEvent, makeBooking };
+  return {
+    isBooking: isBooking || isCreatingCalendarEvent || isUpdatingCookie,
+    makeBooking,
+  };
 };
