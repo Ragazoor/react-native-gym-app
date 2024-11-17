@@ -2,6 +2,7 @@ import { fetchWorkouts } from "@/clients/gymClient";
 import { Workout, WorkoutType } from "@/models/workout";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
+import { atomWithStorage } from "jotai/utils";
 
 function getInitStartDate(): Date {
   const date = new Date();
@@ -37,4 +38,11 @@ export const fetchWorkoutTypesAtom = atom<WorkoutType[]>((get) => {
   return uniqueWorkoutTypes;
 });
 
-export const workoutTypeFilterAtom = atom<WorkoutType[]>([]);
+export const workoutTypeFilterAtom = atomWithStorage<WorkoutType[]>(
+  "workoutFilters",
+  [],
+  undefined,
+  {
+    getOnInit: true,
+  }
+);
