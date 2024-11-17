@@ -4,33 +4,34 @@ import { parseWorkout, Workout } from "@/models/workout";
 
 const BASE_URL = process.env.EXPO_PUBLIC_GYM_BASE_URL!;
 
-export const login = (username: string, password: string): Promise<User> => {
+export const login = async (
+  username: string,
+  password: string
+): Promise<User> => {
   const body = {
     login: username,
     password: password,
   };
 
-  const loginQuery = fetch(`${BASE_URL}/v8.0/memberapi/login`, {
+  console.log("BASE_URL", BASE_URL);
+  const loginResp = await fetch(`${BASE_URL}/v8.0/memberapi/login`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
-  }).then(async (response) => {
-    const status = await response.status;
-    const jsonResp = await response.json();
-    if (status == 200) {
-      const user = parseUser(jsonResp);
-      return user;
-    } else {
-      throw new Error(
-        `Login misslyckades med status ${status}: ${jsonResp.message}`
-      );
-    }
   });
 
-  return loginQuery;
+  const jsonResp = await loginResp.json();
+  if (loginResp.status == 200) {
+    const user = parseUser(jsonResp);
+    return user;
+  } else {
+    throw new Error(
+      `Login misslyckades med status ${loginResp.status}: ${jsonResp.message}`
+    );
+  }
 };
 
 export const fetchWorkouts = (

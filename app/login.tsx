@@ -32,7 +32,7 @@ export default function LoginScreen() {
       router.replace("/google");
     },
     onError: (error) => {
-      Alert.alert("Login Misslyckades", error.message);
+      Alert.alert("Login Failed", error.message);
     },
     onSettled: () => {
       setPassword("");

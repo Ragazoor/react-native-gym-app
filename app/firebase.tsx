@@ -3,7 +3,6 @@ import { Alert, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 import { router } from "expo-router";
-import { User as GoogleUser } from "@react-native-google-signin/google-signin";
 import { ensureUserExists } from "@/clients/firebaseClient";
 
 export default function FirebaseScreen() {
