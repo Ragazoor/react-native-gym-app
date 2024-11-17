@@ -32,6 +32,7 @@ export const fetchWorkoutTypesAtom = atom<WorkoutType[]>((get) => {
   const uniqueWorkoutTypes = Array.from(
     new Map(workoutTypes.map((workout) => [workout.name, workout])).values()
   );
+  uniqueWorkoutTypes.sort((a, b) => a.name.localeCompare(b.name));
 
   return uniqueWorkoutTypes;
 });
