@@ -1,7 +1,7 @@
 import {
   getFriendsWorkouts,
   getMyFriends,
-  getUsers,
+  getAllUsers,
 } from "@/clients/firebaseClient";
 import { FriendWorkout, Friend } from "@/models/friend";
 import { atom } from "jotai";
@@ -22,7 +22,7 @@ const friendListAtom = atom<Friend[]>((get) => {
 const firebaseUsersQueryAtom = atomWithQuery<Friend[]>(() => ({
   queryKey: ["usersAtom"],
   queryFn: async () => {
-    return await getUsers();
+    return await getAllUsers();
   },
 }));
 

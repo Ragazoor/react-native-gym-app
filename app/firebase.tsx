@@ -3,16 +3,19 @@ import { Alert, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 import { router } from "expo-router";
-import { checkSignIn } from "@/clients/googleClient";
 import { User as GoogleUser } from "@react-native-google-signin/google-signin";
+import { ensureUserExists } from "@/clients/firebaseClient";
 
-export default function GoogleScreen() {
-  useQuery<GoogleUser, Error, GoogleUser>("ensureGogleSignIn", checkSignIn, {
+export default function FirebaseScreen() {
+  useQuery<void, Error, void>("ensureFirebaseUserExists", ensureUserExists, {
     onSuccess: () => {
-      router.replace("/firebase");
+      router.replace("/(tabs)");
     },
     onError: () => {
-      Alert.alert("Google Sign In Failed", "Please sign in with Google");
+      Alert.alert(
+        "Was not able to setup user",
+        "Please try again or contact support (Ragnar...)"
+      );
     },
   });
 

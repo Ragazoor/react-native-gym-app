@@ -75,7 +75,7 @@ export const getMyFriends = async (): Promise<Friend[]> => {
   return myFriends;
 };
 
-export const getUsers = async (): Promise<Friend[]> => {
+export const getAllUsers = async (): Promise<Friend[]> => {
   await ensureLoggedIn();
 
   const allUserDocs = await firestore().collection("users").get();
@@ -153,7 +153,25 @@ export const updateCookie = async (): Promise<void> => {
     .doc(`${user.uid}`)
     .collection("private")
     .doc("fysiken")
-    .update({ lastSession: sessionCookie, randomNum: Math.random() });
+    .set({ lastSession: sessionCookie, randomNum: Math.random() });
 
   return result;
+};
+
+export const ensureUserExists = async (): Promise<void> => {
+  const user = await ensureLoggedIn();
+
+  const userDoc = await firestore()
+    .collection("users")
+    .doc(`${user.uid}`)
+    .get();
+
+  if (!userDoc.exists) {
+    await firestore().collection("users").doc(`${user.uid}`).set({
+      name: user.displayName,
+      email: user.email,
+      friends: [],
+      workouts: [],
+    });
+  }
 };
