@@ -1,27 +1,24 @@
-import { SafeAreaView } from "react-native";
-import { StyleSheet } from "react-native";
 import FriendWorkouts from "@/components/FriendWorkouts";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import UserIcon from "@/components/UserIcon";
+import { Surface, useTheme, Text } from "react-native-paper";
+import { CustomTheme } from "../_layout";
 
 export default function FriendsScreen() {
+  const { spacing } = useTheme<CustomTheme>();
   return (
-    <SafeAreaView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Kompisar</ThemedText>
+    <>
+      <Surface
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing.medium,
+          marginTop: spacing.large,
+        }}
+      >
+        <Text variant="headlineLarge">Kompisar</Text>
         <UserIcon />
-      </ThemedView>
+      </Surface>
       <FriendWorkouts />
-    </SafeAreaView>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 52,
-  },
-});

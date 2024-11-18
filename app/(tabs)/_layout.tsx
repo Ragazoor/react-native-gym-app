@@ -1,46 +1,48 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React, { useState } from "react";
+import { BottomNavigation, useTheme } from "react-native-paper";
+import WorkoutsScreen from ".";
+import FriendsScreen from "./friends";
+import ProfileScreen from "./profile";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const [index, setIndex] = useState(0);
+  const theme = useTheme();
+
+  const [routes] = useState([
+    {
+      key: "workouts",
+      title: "Workouts",
+      focusedIcon: "dumbbell",
+      unfocusedIcon: "dumbbell",
+    },
+    {
+      key: "profile",
+      title: "Profile",
+      focusedIcon: "account",
+      unfocusedIcon: "account-outline",
+    },
+    {
+      key: "friends",
+      title: "Friends",
+      focusedIcon: "account-multiple",
+      unfocusedIcon: "account-multiple-outline",
+    },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    workouts: WorkoutsScreen,
+    profile: ProfileScreen,
+    friends: FriendsScreen,
+  });
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Workouts',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'barbell' : 'barbell-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="friends"
-        options={{
-          title: 'Friends',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'radio' : 'radio-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <BottomNavigation
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+      activeColor={theme.colors.primary}
+      inactiveColor={theme.colors.onSurface}
+      barStyle={{ backgroundColor: theme.colors.surface }}
+    />
   );
 }

@@ -104,17 +104,17 @@ export const getFriendsWorkouts = async (
 };
 
 const getFriendWorkouts = async (friend: Friend): Promise<FriendWorkout> => {
-  const userWorkoutsDocs = await firestore()
+  const userDoc = await firestore()
     .collection("users")
     .doc(friend.userId)
-    .collection("workouts")
     .get();
+
+  const userWorkouts = userDoc.data()?.workouts || [];
 
   const friendWorkouts = {
     userId: friend.userId,
     userName: friend.userName,
-    workouts: userWorkoutsDocs.docs.map((doc) => {
-      const data = doc.data();
+    workouts: userWorkouts.map((data: any) => {
       return {
         id: data.id,
         extraTitle: data.extraTitle,

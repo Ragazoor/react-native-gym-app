@@ -4,14 +4,19 @@ import BookedWorkouts from "@/components/BookedWorkouts";
 import { useAtomValue } from "jotai";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Surface } from "react-native-paper";
 
 export default function ProfileScreen() {
   const user = useAtomValue(userAtom);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <Surface
+      style={{
+        flex: 1,
+      }}
+    >
       {user && <ProfilePage user={user} />}
       <BookedWorkouts />
-    </SafeAreaView>
+    </Surface>
   );
 }

@@ -1,8 +1,9 @@
-import { isVenueSelectedAtom } from "@/atoms/filterVenuesAtom";
-import { Venue, VenueName, Workout } from "@/models/workout";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { Button, useTheme } from "react-native-paper";
 import { useAtom } from "jotai";
-import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { VenueName } from "@/models/workout";
+import { isVenueSelectedAtom } from "@/atoms/filterVenuesAtom";
 
 interface WorkoutCardProps {
   buttonVenueName: VenueName;
@@ -10,40 +11,33 @@ interface WorkoutCardProps {
 
 const VenueFilterButton: React.FC<WorkoutCardProps> = ({ buttonVenueName }) => {
   const [isActive, setIsActive] = useAtom(isVenueSelectedAtom(buttonVenueName));
+  const theme = useTheme();
 
   return (
-    <TouchableOpacity
-      style={[styles.venueButton, isActive && styles.activeButton]}
+    <Button
+      mode={isActive ? "contained" : "outlined"}
       onPress={() => setIsActive(!isActive)}
+      style={[
+        styles.button,
+        isActive && { backgroundColor: theme.colors.primary },
+      ]}
+      labelStyle={[
+        styles.buttonText,
+        isActive && { color: theme.colors.onPrimary },
+      ]}
     >
-      <Text style={styles.buttonText}>{buttonVenueName}</Text>
-    </TouchableOpacity>
+      {buttonVenueName}
+    </Button>
   );
 };
 
-// Styles for the component
 const styles = StyleSheet.create({
-  filterContainer: {
-    padding: 10,
-    backgroundColor: "#000000",
-    //alignItems: 'center',
-  },
-  buttonTitle: {
-    alignSelf: "flex-start",
-  },
-  venueButton: {
-    padding: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
+  button: {
     flex: 1,
-    alignItems: "center",
     marginHorizontal: 5,
   },
-  activeButton: {
-    backgroundColor: "#007AFF", // Highlight the active button
-  },
   buttonText: {
-    color: "#fff",
+    fontSize: 16,
   },
 });
 

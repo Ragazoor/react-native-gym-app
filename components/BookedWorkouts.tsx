@@ -1,47 +1,49 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import BookedWorkoutCard from "./BookedWorkoutCard";
 import { useAtom } from "jotai";
 import { bookedWorkoutsAtom } from "@/atoms/bookedWorkoutsAtom";
-import BookedWorkoutInfo from "./BookedWorkoutInfo";
+import { Surface, Text, useTheme } from "react-native-paper";
+import { CustomTheme } from "@/app/_layout";
 
 const BookedWorkouts: React.FC = () => {
   const [{ data: workouts }] = useAtom(bookedWorkoutsAtom);
+  const { spacing } = useTheme<CustomTheme>();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Upcoming Workouts</Text>
+    <Surface
+      style={{
+        padding: spacing.medium,
+        flex: 1,
+      }}
+    >
+      <Text variant="headlineLarge">Upcoming Workouts</Text>
       {workouts && workouts.length > 0 ? (
         <FlatList
-          data={workouts}
-          renderItem={({ item: workout }) => (
-            <BookedWorkoutCard workout={workout} />
-          )}
+          data={workouts.map((workout) => ({
+            key: workout.id,
+            ...workout,
+          }))}
+          renderItem={({ item }) => <BookedWorkoutCard workout={item} />}
           keyExtractor={(item) => item.id.toString()}
         />
       ) : (
         <Text style={styles.noWorkoutsText}>No booked workouts</Text>
       )}
-    </View>
+    </Surface>
   );
 };
 
 // Styles for the component
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
     marginBottom: 15,
-    color: "#333",
   },
   noWorkoutsText: {
     fontSize: 16,
-    color: "#555",
-    textAlign: "center",
   },
 });
 

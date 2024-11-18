@@ -1,12 +1,15 @@
+import { CustomTheme } from "@/app/_layout";
 import { BookedWorkout } from "@/models/bookedWorkout";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { Card, Text, useTheme } from "react-native-paper";
 
 interface BookedWorkoutInfoProps {
   workout: BookedWorkout;
 }
 
 const BookedWorkoutInfo: React.FC<BookedWorkoutInfoProps> = ({ workout }) => {
+  const { spacing, colors } = useTheme<CustomTheme>();
   const {
     extraTitle,
     startTime,
@@ -33,31 +36,43 @@ const BookedWorkoutInfo: React.FC<BookedWorkoutInfoProps> = ({ workout }) => {
 
   return (
     <>
-      <View style={styles.header}>
-        <Text style={styles.workoutType}>{workoutType.name}</Text>
-        <Text style={styles.extraTitle}>{extraTitle}</Text>
-      </View>
-
-      <View style={styles.details}>
-        <Text style={styles.time}>
+      <Card.Content>
+        <Text
+          variant="titleLarge"
+          style={[styles.workoutType, { color: colors.primary }]}
+        >
+          {workoutType.name}
+        </Text>
+        <Text variant="titleMedium" style={styles.extraTitle}>
+          {extraTitle}
+        </Text>
+        <Text variant="titleMedium" style={styles.time}>
           {weekDay} {formattedStartTime} - {formattedEndTime}
         </Text>
         <Text
+          variant="titleMedium"
           style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}
         >
           {isFullyBooked ? "Fully Booked" : `Booked: ${bookingStatus}`}
         </Text>
         {numQueued > 0 && <Text style={styles.queue}>Queue: {numQueued}</Text>}
-      </View>
-
-      <View style={styles.staffSection}>
-        <Text style={styles.staffTitle}>Staff:</Text>
+      </Card.Content>
+      <Card.Content
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: spacing.small,
+          marginTop: 2,
+          marginBottom: 4,
+        }}
+      >
+        <Text variant="titleMedium">Staff:</Text>
         {staffs.map((staff) => (
-          <Text key={staff.id} style={styles.staffName}>
+          <Text key={staff.id}>
             {staff.firstName} {staff.lastName}
           </Text>
         ))}
-      </View>
+      </Card.Content>
     </>
   );
 };
@@ -71,71 +86,39 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 15,
-    color: "#333",
   },
   noWorkoutsText: {
     fontSize: 16,
-    color: "#555",
     textAlign: "center",
   },
   card: {
-    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
-    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 5,
   },
-  header: {
-    marginBottom: 10,
-  },
-  workoutType: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
+  header: {},
+  workoutType: {},
   extraTitle: {
-    fontSize: 14,
-    color: "#555",
     marginTop: 2,
   },
   details: {
     marginBottom: 10,
   },
-  time: {
-    fontSize: 16,
-    color: "#666",
-  },
+  time: {},
   bookingStatus: {
-    fontSize: 16,
-    marginTop: 5,
-    color: "#007AFF",
+    marginTop: 2,
   },
-  fullBooking: {
-    color: "#FF3B30",
-  },
+  fullBooking: {},
   queue: {
-    fontSize: 14,
-    color: "#FFA500",
-    marginTop: 3,
+    marginTop: 2,
   },
   staffSection: {
     borderTopWidth: 1,
-    borderTopColor: "#eee",
-    paddingTop: 10,
-  },
-  staffTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
-  },
-  staffName: {
-    fontSize: 14,
-    color: "#555",
+    paddingTop: 2,
   },
 });
 

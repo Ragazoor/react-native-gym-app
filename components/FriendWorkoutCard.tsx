@@ -2,9 +2,10 @@ import { userAtom } from "@/atoms/userAtom";
 import { BookedWorkout } from "@/models/bookedWorkout";
 import { useAtomValue } from "jotai";
 import React from "react";
-import { StyleSheet, TouchableOpacity, Button } from "react-native";
+import { StyleSheet } from "react-native";
 import BookedWorkoutInfo from "./BookedWorkoutInfo";
 import { useCreateBooking } from "@/hooks/useCreateBooking";
+import { Button, Surface } from "react-native-paper";
 
 interface FriendWorkoutCardProps {
   workout: BookedWorkout;
@@ -15,10 +16,16 @@ const FriendWorkoutCard: React.FC<FriendWorkoutCardProps> = ({ workout }) => {
   const { isBooking, makeBooking } = useCreateBooking(user!.id, workout);
 
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.8} key={workout.id}>
+    <Surface style={styles.card}>
       <BookedWorkoutInfo workout={workout} />
-      <Button title="Boka" disabled={isBooking} onPress={() => makeBooking()} />
-    </TouchableOpacity>
+      <Button
+        mode="contained"
+        disabled={isBooking}
+        onPress={() => makeBooking()}
+      >
+        Book Workout
+      </Button>
+    </Surface>
   );
 };
 
@@ -39,15 +46,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
     padding: 15,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 5,
   },
   header: {
     marginBottom: 10,
