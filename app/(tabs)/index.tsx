@@ -22,60 +22,18 @@ import {
   fetchWorkoutsStartDateAtom,
 } from "@/atoms/fetchWorkoutsAtom";
 import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
+import { useGetFilteredWorkouts } from "@/hooks/useGetFilteredWorkouts";
 
 export default function WorkoutsScreen() {
-  const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDate] = useState(new Date());
-  const [filteredWorkouts, setFilteredWorkouts] = useState(allWorkouts);
-  const selectedVenues = useAtomValue(selectedVenuesAtom);
   const startDate = useAtomValue(fetchWorkoutsStartDateAtom);
-  const workoutTypeFilter = useAtomValue(workoutTypeFilterAtom);
-
-  const [{ data: fetchedWorkouts }] = useAtom(fetchWorkoutsAtomQuery);
-  const nowDateTime = new Date();
 
   const selectedWeekDay = useMemo(() => {
     return dateTimeToWeekDay(selectedDateTime);
   }, [selectedDateTime]);
 
-  useEffect(() => {
-    if (fetchedWorkouts) {
-      setAllWorkouts(fetchedWorkouts);
-    }
-  }, [fetchedWorkouts]);
-
-  useEffect(() => {
-    setFilteredWorkouts(
-      allWorkouts.filter((workout) => {
-        const workoutDate = workout.startTime.toLocaleString().split(",")[0];
-        const selectedDate = selectedDateTime.toLocaleString().split(",")[0];
-
-        const isOkVenue =
-          selectedVenues.length > 0
-            ? workout.venue &&
-              selectedVenues
-                .filter(({ active }) => active)
-                .map(({ name }) => name)
-                .includes(workout.venue.name)
-            : true;
-
-        const isOkWorkoutType =
-          workoutTypeFilter.length > 0
-            ? workoutTypeFilter
-                .map((wt) => wt.name)
-                .includes(workout.workoutType.name)
-            : true;
-
-        return (
-          workoutDate === selectedDate &&
-          workout.endTime > nowDateTime &&
-          isOkVenue &&
-          isOkWorkoutType
-        );
-      })
-    );
-  }, [selectedDateTime, allWorkouts, selectedVenues, workoutTypeFilter]);
+  const filteredWorkouts = useGetFilteredWorkouts(selectedDateTime);
 
   const onSelectDateTime = (
     event: DateTimePickerEvent,
