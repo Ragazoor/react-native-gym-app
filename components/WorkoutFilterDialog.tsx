@@ -1,3 +1,4 @@
+import { CustomTheme } from "@/app/_layout";
 import { fetchWorkoutTypesAtom } from "@/atoms/fetchWorkoutsAtom";
 import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
 import { WorkoutType } from "@/models/workout";
@@ -5,7 +6,7 @@ import { useAtom, useAtomValue } from "jotai";
 import React, { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Text, TouchableOpacity } from "react-native";
-import { Modal, Portal, Button } from "react-native-paper";
+import { Modal, Portal, Button, useTheme } from "react-native-paper";
 
 interface WorkoutFilterDialogProps {
   visible: boolean;
@@ -16,6 +17,7 @@ const WorkoutFilterDialog = ({
   visible,
   onClose,
 }: WorkoutFilterDialogProps) => {
+  const { spacing } = useTheme<CustomTheme>();
   const allWorkoutTypes = useAtomValue(fetchWorkoutTypesAtom);
   const [workoutTypeFilter, setWorkoutTypeFilter] = useAtom(
     workoutTypeFilterAtom
@@ -60,7 +62,13 @@ const WorkoutFilterDialog = ({
           )}
         />
 
-        <Button onPress={onClose}>Close</Button>
+        <Button
+          mode="outlined"
+          onPress={onClose}
+          style={{ marginTop: spacing.medium }}
+        >
+          Close
+        </Button>
       </Modal>
     </Portal>
   );
@@ -71,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     marginHorizontal: 20,
+    marginVertical: 100,
   },
   title: {
     fontSize: 18,
