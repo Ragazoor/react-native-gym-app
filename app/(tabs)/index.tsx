@@ -1,37 +1,30 @@
-import { StyleSheet, FlatList, Button } from "react-native";
-
+import { fetchWorkoutsStartDateAtom } from "@/atoms/fetchWorkoutsAtom";
 import { MuscleEmoji } from "@/components/MuscleEmoji";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  dateToWeekDay as dateTimeToWeekDay,
-  VenueName,
-  Workout,
-} from "@/models/workout";
+import VenueFilterButton from "@/components/VenueFilterButton";
+import WorkoutFilterIcon from "@/components/WorkoutFilterIcon";
+import { dateToWeekDay, VenueName, Workout } from "@/models/workout";
 import WorkoutCard from "@/components/WorkoutCard";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import VenueFilterButton from "@/components/VenueFilterButton";
-import { useAtom, useAtomValue } from "jotai";
-import { selectedVenuesListAtom as selectedVenuesAtom } from "@/atoms/filterVenuesAtom";
-import WorkoutFilterIcon from "@/components/WorkoutFilterIcon";
-import {
-  fetchWorkoutsAtomQuery,
-  fetchWorkoutsStartDateAtom,
-} from "@/atoms/fetchWorkoutsAtom";
-import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
+
 import { useGetFilteredWorkouts } from "@/hooks/useGetFilteredWorkouts";
+import { useAtomValue } from "jotai";
+import React, { useState, useMemo } from "react";
+import { FlatList } from "react-native";
+import { useTheme, Surface, Text, Button } from "react-native-paper";
+import { CustomTheme } from "../_layout";
 
 export default function WorkoutsScreen() {
+  const { colors, spacing, fonts } = useTheme<CustomTheme>();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateTime, setSelectedDate] = useState(new Date());
   const startDate = useAtomValue(fetchWorkoutsStartDateAtom);
 
-  const selectedWeekDay = useMemo(() => {
-    return dateTimeToWeekDay(selectedDateTime);
-  }, [selectedDateTime]);
+  const selectedWeekDay = useMemo(
+    () => dateToWeekDay(selectedDateTime),
+    [selectedDateTime]
+  );
 
   const filteredWorkouts = useGetFilteredWorkouts(selectedDateTime);
 
@@ -46,16 +39,29 @@ export default function WorkoutsScreen() {
 
   return (
     <>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Fysiken Pass</ThemedText>
+      <Surface
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: spacing.large,
+        }}
+      >
+        <Text variant="headlineMedium" style={{ flex: 1 }}>
+          Fysiken Pass
+        </Text>
         <MuscleEmoji />
         <WorkoutFilterIcon />
-      </ThemedView>
-      <ThemedView style={styles.filterContainer}>
-        <ThemedText style={styles.buttonTitle} type="subtitle">
+      </Surface>
+
+      <Surface
+        style={{ padding: spacing.medium, backgroundColor: colors.background }}
+      >
+        <Text variant="titleMedium" style={{ marginBottom: spacing.small }}>
           {selectedWeekDay}
-        </ThemedText>
-        <Button title="Välj Datum" onPress={() => setShowDatePicker(true)} />
+        </Text>
+        <Button mode="contained" onPress={() => setShowDatePicker(true)}>
+          Välj Datum
+        </Button>
         {showDatePicker && (
           <DateTimePicker
             value={selectedDateTime}
@@ -64,13 +70,20 @@ export default function WorkoutsScreen() {
             onChange={onSelectDateTime}
           />
         )}
-      </ThemedView>
-      <ThemedView style={styles.venueFilterContainer}>
+      </Surface>
+
+      <Surface
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          marginVertical: spacing.medium,
+        }}
+      >
         <VenueFilterButton buttonVenueName={VenueName.GIBRALTARGATAN} />
         <VenueFilterButton buttonVenueName={VenueName.KASTERNTORGET} />
-      </ThemedView>
+      </Surface>
 
-      <ThemedView style={styles.stepContainer}>
+      <Surface style={{ flex: 1, marginBottom: spacing.large }}>
         <FlatList
           data={filteredWorkouts.map((workout) => ({
             key: workout.id,
@@ -78,61 +91,7 @@ export default function WorkoutsScreen() {
           }))}
           renderItem={({ item }) => <WorkoutCard workout={item} />}
         />
-      </ThemedView>
+      </Surface>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 52,
-  },
-  filterContainer: {
-    padding: 10,
-    backgroundColor: "#000000",
-    //alignItems: 'center',
-  },
-  buttonTitle: {
-    alignSelf: "flex-start",
-  },
-  stepContainer: {
-    flex: 1,
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-  venueFilterContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginVertical: 10,
-    paddingHorizontal: 10,
-  },
-  venueButton: {
-    padding: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  activeButton: {
-    backgroundColor: "#007AFF", // Highlight the active button
-  },
-  buttonText: {
-    color: "#fff",
-  },
-});

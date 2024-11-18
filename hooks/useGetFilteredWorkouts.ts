@@ -5,7 +5,7 @@ import { WorkoutType, Workout } from "@/models/workout";
 import { useAtom, useAtomValue } from "jotai";
 import { useState, useEffect, useMemo } from "react";
 
-export function useGetFilteredWorkouts(selectedDateTime: Date) {
+export function useGetFilteredWorkouts(selectedDateTime: Date): Workout[] {
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
   const [{ data: fetchedWorkouts }] = useAtom(fetchWorkoutsAtomQuery);
   const selectedVenues = useAtomValue(selectedVenuesListAtom);

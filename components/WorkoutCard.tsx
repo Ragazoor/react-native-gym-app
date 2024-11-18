@@ -1,11 +1,11 @@
-import { Workout } from '@/models/workout';
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
-import { useAtom, useAtomValue } from 'jotai';
-import { userAtom } from '@/atoms/userAtom';
-import { bookedWorkoutsAtom } from '@/atoms/bookedWorkoutsAtom';
-import { useRemoveBooking } from '@/hooks/useRemoveBooking';
-import { useCreateBooking } from '@/hooks/useCreateBooking';
+import { Workout } from "@/models/workout";
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
+import { useAtom, useAtomValue } from "jotai";
+import { userAtom } from "@/atoms/userAtom";
+import { bookedWorkoutsAtom } from "@/atoms/bookedWorkoutsAtom";
+import { useRemoveBooking } from "@/hooks/useRemoveBooking";
+import { useCreateBooking } from "@/hooks/useCreateBooking";
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -23,29 +23,44 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
     workoutType,
     staffs,
     venue,
-    weekDay
+    weekDay,
   } = workout;
 
-  const user = useAtomValue(userAtom)
+  const user = useAtomValue(userAtom);
   const [{ data: bookedWorkouts }] = useAtom(bookedWorkoutsAtom);
 
   const { isBooking, makeBooking } = useCreateBooking(user!.id, workout);
 
-  const { isRemovingWorkout, removeBooking: removeWorkout } = useRemoveBooking(user!.id, workout);
+  const { isRemovingWorkout, removeBooking: removeWorkout } = useRemoveBooking(
+    user!.id,
+    workout
+  );
 
   // Format time (you can customize based on your requirement)
-  const formattedStartTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  const formattedEndTime = endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const formattedStartTime = startTime.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const formattedEndTime = endTime.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   // Booking status calculation
   const bookingStatus = `${numBooked} / ${numSpace}`;
   const isFullyBooked = numBooked >= numSpace;
 
-  const extraTitle = `${duration ? duration : ""}${venue ? "  " + venue.name : ""}`
+  const extraTitle = `${duration ? duration : ""}${
+    venue ? "  " + venue.name : ""
+  }`;
 
-  const isBooked = useMemo(() =>
-    bookedWorkouts ? bookedWorkouts.some((bookedWorkout) => bookedWorkout.id === workoutId) : false
-    , [bookedWorkouts, workoutId]);
+  const isBooked = useMemo(
+    () =>
+      bookedWorkouts
+        ? bookedWorkouts.some((bookedWorkout) => bookedWorkout.id === workoutId)
+        : false,
+    [bookedWorkouts, workoutId]
+  );
 
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8}>
@@ -58,12 +73,12 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
         <Text style={styles.time}>
           {weekDay} {formattedStartTime} - {formattedEndTime}
         </Text>
-        <Text style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}>
-          {isFullyBooked ? 'Fully Booked' : `Booked: ${bookingStatus}`}
+        <Text
+          style={[styles.bookingStatus, isFullyBooked && styles.fullBooking]}
+        >
+          {isFullyBooked ? "Fully Booked" : `Booked: ${bookingStatus}`}
         </Text>
-        {numQueued > 0 && (
-          <Text style={styles.queue}>Queue: {numQueued}</Text>
-        )}
+        {numQueued > 0 && <Text style={styles.queue}>Queue: {numQueued}</Text>}
       </View>
 
       <View style={styles.staffSection}>
@@ -75,8 +90,21 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
             </Text>
           ))}
         </View>
-        {!isBooked && <Button title="Boka" disabled={isBooking} onPress={() => makeBooking()} />}
-        {isBooked && <Button title="Avboka" color={"red"} disabled={isRemovingWorkout} onPress={() => removeWorkout()} />}
+        {!isBooked && (
+          <Button
+            title="Boka"
+            disabled={isBooking}
+            onPress={() => makeBooking()}
+          />
+        )}
+        {isBooked && (
+          <Button
+            title="Avboka"
+            color={"red"}
+            disabled={isRemovingWorkout}
+            onPress={() => removeWorkout()}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -85,11 +113,11 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
 // Styles for the component
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
@@ -100,12 +128,12 @@ const styles = StyleSheet.create({
   },
   workoutType: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   extraTitle: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
     marginTop: 2,
   },
   details: {
@@ -113,37 +141,37 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   bookingStatus: {
     fontSize: 16,
     marginTop: 5,
-    color: '#007AFF',
+    color: "#007AFF",
   },
   fullBooking: {
-    color: '#FF3B30',
+    color: "#FF3B30",
   },
   queue: {
     fontSize: 14,
-    color: '#FFA500',
+    color: "#FFA500",
     marginTop: 3,
   },
   staffSection: {
     borderTopWidth: 1,
-    borderTopColor: '#eee',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    borderTopColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
     paddingTop: 10,
   },
   staffTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
-    color: '#333',
+    color: "#333",
   },
   staffName: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
   },
 });
 
