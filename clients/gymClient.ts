@@ -13,7 +13,6 @@ export const login = async (
     password: password,
   };
 
-  console.log("BASE_URL", BASE_URL);
   const loginResp = await fetch(`${BASE_URL}/v8.0/memberapi/login`, {
     method: "POST",
     credentials: "include",

@@ -37,12 +37,3 @@ export const fetchWorkoutTypesAtom = atom<WorkoutType[]>((get) => {
 
   return uniqueWorkoutTypes;
 });
-
-export const workoutTypeFilterAtom = atomWithStorage<WorkoutType[]>(
-  "workoutFilters",
-  [],
-  undefined,
-  {
-    getOnInit: true,
-  }
-);

@@ -1,7 +1,5 @@
-import {
-  fetchWorkoutTypesAtom,
-  workoutTypeFilterAtom,
-} from "@/atoms/fetchWorkoutsAtom";
+import { fetchWorkoutTypesAtom } from "@/atoms/fetchWorkoutsAtom";
+import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
 import { WorkoutType } from "@/models/workout";
 import { useAtom, useAtomValue } from "jotai";
 import React, { useState } from "react";
@@ -24,11 +22,16 @@ const WorkoutFilterDialog = ({
   );
 
   const toggleWorkoutType = (workoutType: WorkoutType) => {
-    setWorkoutTypeFilter((prev) =>
-      prev.map((wt) => wt.id).includes(workoutType.id)
-        ? prev.filter((type) => type !== workoutType)
-        : [...prev, workoutType]
-    );
+    setWorkoutTypeFilter(async (prev) => {
+      const prevFilters = await prev;
+      const workoutTypeIsInFilter = prevFilters
+        .map((wt) => wt.name)
+        .includes(workoutType.name);
+
+      return workoutTypeIsInFilter
+        ? prevFilters.filter((type) => type.name !== workoutType.name)
+        : [...prevFilters, workoutType];
+    });
   };
 
   return (
@@ -47,7 +50,8 @@ const WorkoutFilterDialog = ({
             <TouchableOpacity
               style={[
                 styles.workoutItem,
-                workoutTypeFilter.includes(item) && styles.selectedItem,
+                workoutTypeFilter.map((wt) => wt.name).includes(item.name) &&
+                  styles.selectedItem,
               ]}
               onPress={() => toggleWorkoutType(item)}
             >

@@ -20,8 +20,8 @@ import WorkoutFilterIcon from "@/components/WorkoutFilterIcon";
 import {
   fetchWorkoutsAtomQuery,
   fetchWorkoutsStartDateAtom,
-  workoutTypeFilterAtom,
 } from "@/atoms/fetchWorkoutsAtom";
+import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
 
 export default function WorkoutsScreen() {
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
@@ -31,7 +31,6 @@ export default function WorkoutsScreen() {
   const selectedVenues = useAtomValue(selectedVenuesAtom);
   const startDate = useAtomValue(fetchWorkoutsStartDateAtom);
   const workoutTypeFilter = useAtomValue(workoutTypeFilterAtom);
-  console.log("workoutTypeFilter", workoutTypeFilter);
 
   const [{ data: fetchedWorkouts }] = useAtom(fetchWorkoutsAtomQuery);
   const nowDateTime = new Date();
