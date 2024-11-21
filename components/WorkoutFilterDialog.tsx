@@ -3,7 +3,7 @@ import { fetchWorkoutTypesAtom } from "@/atoms/fetchWorkoutsAtom";
 import { workoutTypeFilterAtom } from "@/atoms/workoutTypeFilterAtom";
 import { WorkoutType } from "@/models/workout";
 import { useAtom, useAtomValue } from "jotai";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Text, TouchableOpacity } from "react-native";
 import { Modal, Portal, Button, useTheme } from "react-native-paper";

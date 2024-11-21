@@ -120,7 +120,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ workout }) => {
         {isBooked && (
           <Button
             mode="contained-tonal"
-            buttonColor={colors.error}
+            buttonColor={colors.secondary}
             loading={isRemovingWorkout}
             onPress={() => removeWorkout()}
           >

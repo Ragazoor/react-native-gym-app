@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { EvilIcons, Ionicons } from "@expo/vector-icons";
-import FriendSearchDialog from "./FriendSearchDialog";
+import FriendSearchDialog from "./friendSearchDialog/FriendSearchDialog";
 
 const UserIcon = () => {
   const [isDialogVisible, setDialogVisible] = useState(false);
